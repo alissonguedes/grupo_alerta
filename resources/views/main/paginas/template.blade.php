@@ -38,9 +38,9 @@
 
     <div class="site-content-contain">
         <div class="site-content-wrap">
-            <div id="content" class="site-content">
-                @yield('content')
-            </div>
+
+            @yield('content')
+
         </div>
     </div>
     <!-- .site-content-wrap -->
