@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Main;
 
+use App\Mail\ContactPage;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PaginasController extends Controller
 {
@@ -39,6 +42,13 @@ class PaginasController extends Controller
 
     }
 
+    public function grupo(Request $request)
+    {
+
+        return view('main.paginas.grupo');
+
+    }
+
     public function fotos($page, $album = null)
     {
 
@@ -52,6 +62,53 @@ class PaginasController extends Controller
         } else {
             return view('main.galeria.index', $dados);
         }
+
+    }
+
+    public function orcamento(Request $request)
+    {
+
+        return view('main.paginas.orcamento');
+
+    }
+
+    public function contato(Request $request)
+    {
+
+        return view('main.paginas.contato');
+
+    }
+
+    public function send_contact_form(Request $request)
+    {
+
+        $validate = [
+            'nome' => 'required',
+            'email' => 'required',
+            'telefone' => 'required',
+            'endereco' => 'required',
+            'cidade' => 'required',
+            'estado' => 'required',
+        ];
+
+        if (!$request->outros_servicos && is_null($request->servicos)) {
+            $validate['servicos[]'] = ['required'];
+        }
+
+        if ($request->outros_servicos && (!isset($_POST['outros']) || empty(trim($_POST['outros'])))) {
+            $validate['outros'] = ['required'];
+        }
+
+        $request->validate($validate);
+
+        $moreUsers = [];
+        $evenMoreUsers = [];
+
+        // To é o endereço de e-mail para onde será enviado
+        Mail::to('alissonguedes87@gmail.com')
+            ->cc($moreUsers)
+            ->bcc($evenMoreUsers)
+            ->send(new ContactPage($request));
 
     }
 

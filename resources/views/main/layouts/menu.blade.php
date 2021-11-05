@@ -1,10 +1,21 @@
+@php
+$empresa = new App\Models\Main\EmpresaModel();
+$empresa = $empresa
+    ->select('*')
+    ->from('tb_empresa')
+    ->where('matriz', 'S')
+    ->first();
+@endphp
+
 <div class="dsvy-pre-header-wrapper  dsvy-bg-color-transparent dsvy-color-white">
     <div class="container">
         <div class="d-flex justify-content-between">
             <div class="dsvy-pre-header-left">
                 <ul class="dsvy-contact-info dsvy-skincolor-icon">
-                    <li><i class="dsvy-base-icon-letter"></i> Atendimento: 0800-556-1700</li>
-                    <li><i class="dsvy-base-icon-placeholder-1"></i> Matriz - Rua Estelita Cruz, 221 - Alto Branco, Campina Grande-PB</li>
+                    <li><i class="dsvy-base-icon-letter"></i> Atendimento: {{ get_config('contact_phone') }}</li>
+                    <li><i class="dsvy-base-icon-placeholder-1"></i> Matriz - {{ $empresa->endereco }},
+                        {{ $empresa->numero }} - {{ $empresa->bairro }},
+                        {{ $empresa->cidade }} - {{ $empresa->estado }}</li>
                 </ul>
             </div><!-- .dsvy-pre-header-left -->
             <div class="dsvy-pre-header-right">
@@ -18,10 +29,14 @@
                 </ul>
 
                 <!--<div class="dsvy-header-search-btn"><a href="#"><i class="dsvy-base-icon-search"></i></a></div>-->
-            </div><!-- .dsvy-pre-header-right -->
-        </div><!-- .justify-content-between -->
-    </div><!-- .container -->
-</div><!-- .dsvy-pre-header-wrapper -->
+            </div>
+            <!-- .dsvy-pre-header-right -->
+        </div>
+        <!-- .justify-content-between -->
+    </div>
+    <!-- .container -->
+</div>
+<!-- .dsvy-pre-header-wrapper -->
 
 <!-- header -->
 <div class="d-flex justify-content-between align-items-center dsvy-header-content">
@@ -87,7 +102,7 @@
         <div class="dsvy-header-button">
             <a href="https://wa.me/558330665758" target="_blank">
                 <span class="dsvy-header-button-text-1">Nos chame no Whatsapp?</span>
-                <span class="dsvy-header-button-text-2">(83) 3066-5758</span>
+                <span class="dsvy-header-button-text-2">{{ get_config('contact_cel') }}</span>
             </a>
         </div>
     </div>

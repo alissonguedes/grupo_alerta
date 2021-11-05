@@ -1,3 +1,4 @@
+<link rel="stylesheet" media="screen" href="{{ asset('assets/fonts/material-icons/material-icons.css') }}">
 <link rel="profile" href="https://gmpg.org/xfn/11">
 <title>GRUPO ALERTA</title>
 <link rel="dns-prefetch" href="http://fonts.googleapis.com/" />
@@ -5,6 +6,9 @@
 <link href="https://fonts.gstatic.com/" crossorigin rel="preconnect" />
 <link rel="alternate" type="application/rss+xml" title="Digicop Demo 2 &raquo; Feed" href="feed/index.html" />
 <link rel="alternate" type="application/rss+xml" title="Digicop Demo 2 &raquo; Comments Feed" href="comments/feed/index.html" />
+<link rel="stylesheet" href="{{ asset('assets/grupoalertaweb/css/orcamento.css') }}">
+<link rel="stylesheet" media="screen" href="{{ asset('assets/styles/colors.css') }}">
+
 <script>
     window._wpemojiSettings = {
         "baseUrl": "https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/",
@@ -95,7 +99,9 @@
 <link rel="stylesheet" id="google-fonts-1-css" href="https://fonts.googleapis.com/css?family=Barlow+Condensed%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CBarlow%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic&amp;ver=5.6.2') }}" media="all" />
 <link rel="stylesheet" id="elementor-icons-shared-0-css" href="{{ asset('assets/grupoalertaweb/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.minb683.css?ver=5.12.0') }}" media="all" />
 <link rel="stylesheet" id="elementor-icons-fa-solid-css" href="{{ asset('assets/grupoalertaweb/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.minb683.css?ver=5.12.0') }}" media="all" />
-<script src="{{ asset('assets/grupoalertaweb/wp-includes/js/jquery/jquery.min9d52.js?ver=3.5.1') }}" id="jquery-core-js"></script>
+
+<script src="{{ asset('assets/plugins/jquery/jquery-3.5.1.min.js') }}"></script>
+{{-- <script src="{{ asset('assets/grupoalertaweb/wp-includes/js/jquery/jquery.min9d52.js?ver=3.5.1') }}" id="jquery-core-js"></script> --}}
 <script src="{{ asset('assets/grupoalertaweb/wp-includes/js/jquery/jquery-migrate.mind617.js?ver=3.3.2') }}" id="jquery-migrate-js"></script>
 <script src="{{ asset('assets/grupoalertaweb/wp-content/plugins/revslider/public/assets/js/rbtools.min072b.js?ver=6.3.5') }}" id="tp-tools-js"></script>
 <script src="{{ asset('assets/grupoalertaweb/wp-content/plugins/revslider/public/assets/js/rs6.min072b.js?ver=6.3.5') }}" id="revmin-js"></script>
@@ -174,4 +180,17 @@
         }
         //});
     };
+</script>
+
+<script src="{{ asset('assets/plugins/materializecss/materialize.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery/form.js') }}"></script>
+<script src="{{ asset('assets/scripts/materializecss.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery/form.js') }}"></script>
+<script src="{{ asset('assets/scripts/form.js') }}"></script>
+
+<script>
+    var SHOW_DEFAULTS_MESSAGES = false;
+    $(function() {
+        Form.init();
+    })
 </script>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BannersController;
 use App\Http\Controllers\Admin\ClientesController;
 use App\Http\Controllers\Admin\ContatoController;
+use App\Http\Controllers\Admin\EmpresasController;
 use App\Http\Controllers\Admin\FotosController;
 use App\Http\Controllers\Admin\HomeController as Dashboard;
 use App\Http\Controllers\Admin\IdiomasController;
@@ -118,8 +119,8 @@ Route::prefix('/admin')->group(function ($admin) {
     Route::prefix('paginas/menus')->group(function () {
 
         Route::get('/', [PaginasController::class, 'menus'])->name('admin.paginas.menus');
-		// Route::get('/add')
-		Route::post('/', [PaginasController::class, 'update_menu'])->name('admin.paginas.menus.update');
+        // Route::get('/add')
+        Route::post('/', [PaginasController::class, 'update_menu'])->name('admin.paginas.menus.update');
 
     });
 
@@ -177,6 +178,19 @@ Route::prefix('/admin')->group(function ($admin) {
         Route::put('/', [ContatoController::class, 'update'])->name('admin.contato.put')->where('id', '[0-9]+');
         Route::patch('/{campo}', [ContatoController::class, 'replace'])->name('admin.contato.patch')->where('id', '[0-9]+');
         Route::delete('/', [ContatoController::class, 'delete'])->name('admin.contato.delete');
+
+    });
+
+    /** Empresa */
+    Route::prefix('empresas')->group(function () {
+
+        Route::get('/', [EmpresasController::class, 'index'])->name('admin.empresas');
+        Route::get('/add', [EmpresasController::class, 'show_form'])->name('admin.empresas.add');
+        Route::get('/{id}', [EmpresasController::class, 'show_form'])->name('admin.empresas.edit')->where('id', '[0-9]+');
+        Route::post('/', [EmpresasController::class, 'insert'])->name('admin.empresas.insert');
+        Route::put('/', [EmpresasController::class, 'update'])->name('admin.empresas.put')->where('id', '[0-9]+');
+        Route::patch('/{campo}', [EmpresasController::class, 'replace'])->name('admin.empresas.patch')->where('id', '[0-9]+');
+        Route::delete('/', [EmpresasController::class, 'delete'])->name('admin.empresas.delete');
 
     });
 
@@ -285,7 +299,7 @@ Route::prefix('/')->group(function () {
 
     // HomeController
     Route::get('/', [Home::class, 'index'])->name('home');
-    // Route::get('/home', [Home::class, 'index'])->name('home');
+    Route::get('/home', [Home::class, 'index'])->name('home');
     // Route::get('/inicio', [Home::class, 'index'])->name('home');
     // Route::get('/home-page', [Home::class, 'index'])->name('home');
     // Route::get('/pagina-inicial', [Home::class, 'index'])->name('home');
@@ -299,17 +313,15 @@ Route::prefix('/')->group(function () {
     Route::get('/noticias/{id}', [Noticias::class, 'show'])->name('noticias.id');
 
     // O Grupo
-    Route::prefix('grupo')->group(function () {
+    Route::get('/o-grupo', [Paginas::class, 'grupo'])->name('grupo');
+    Route::get('/grupo', [Paginas::class, 'grupo'])->name('grupo');
 
-        Route::get('/', [Paginas::class, 'grupo'])->name('grupo');
+    // Orçamento
+    Route::get('/orcamento', [Paginas::class, 'orcamento'])->name('orcamento');
 
-    });
-
-    Route::prefix('contato')->group(function() {
-
-        Route::get('/orcamento', [Contato::class, 'orcamento']) -> name('orcamento');
-
-    });
+    // Contato
+    Route::get('/contato', [Paginas::class, 'contato'])->name('contato');
+    Route::post('/contato', [Paginas::class, 'send_contact_form'])->name('contato.send_mail');
 
     $menus = new PaginaModel();
 

@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Admin {
 
-    use App\Models\Admin\ClienteModel;
+    use App\Models\Admin\EmpresaModel;
     use App\Models\Admin\IdiomaModel;
-    use App\Models\Admin\MenuModel;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Validation\Rule;
 
-    class ClientesController extends Controller
+    class EmpresasController extends Controller
     {
+
         public function __construct()
         {
-            $this->cliente_model = new ClienteModel();
-            $this->menu_model = new MenuModel();
+            $this->empresa_model = new EmpresaModel();
             $this->idioma_model = new IdiomaModel();
         }
 
@@ -31,12 +30,12 @@ namespace App\Http\Controllers\Admin {
             }
 
             if ($request->ajax()) {
-                $dados['paginate'] = $this->cliente_model->getCliente();
-
-                return view('admin.clientes.list', $dados);
+                $dados['paginate'] = $this->empresa_model->getEmpresa();
+                return view('admin.empresas.list', $dados);
             }
 
-            return view('admin.clientes.index');
+            return view('admin.empresas.index');
+
         }
 
         public function show_form(Request $request, $id = null)
@@ -54,13 +53,12 @@ namespace App\Http\Controllers\Admin {
             $dados = [];
 
             if (!is_null($id)) {
-                $dados['row'] = $this->cliente_model->getCliente($id)->first();
+                $dados['row'] = $this->empresa_model->getEmpresa($id)->first();
             }
 
             $dados['idiomas'] = $this->idioma_model->getIdioma();
-            $dados['menus'] = $this->menu_model->getMenu();
 
-            return view('admin.clientes.form', $dados);
+            return view('admin.empresas.form', $dados);
         }
 
         public function insert(Request $request)
@@ -76,19 +74,31 @@ namespace App\Http\Controllers\Admin {
             }
 
             $request->validate([
-                'nome' => ['required', 'unique:tb_cliente,nome', 'max:255'],
-                'imagem' => ['required'],
+                'razao_social' => ['required', 'unique:tb_empresa,razao_social', 'max:100'],
+                // 'cnpj' => ['required'],
+                // 'inscricao_estadual' => ['required'],
+                // 'inscricao_municipal' => ['required'],
+                'razao_social' => ['required'],
+                // 'nome_fantasia' => ['required'],
+                'endereco' => ['required'],
+                'numero' => ['required'],
+                'bairro' => ['required'],
+                // 'cep' => ['required'],
+                'cidade' => ['required'],
+                'estado' => ['required'],
+                'telefone',
+                // 'imagem' => ['required'],
             ]);
 
-            $url = url('admin/clientes ');
+            $url = url('admin/empresas ');
             $type = 'back';
 
-            if ($this->cliente_model->create($request)) {
+            if ($this->empresa_model->create($request)) {
                 $status = 'success';
-                $message = 'Idioma cadastrado com sucesso!';
+                $message = 'Empresa cadastrada com sucesso!';
             } else {
                 $status = 'error';
-                $message = 'Não foi possível cadastrar o idioma. Por favor, tente novamente.';
+                $message = 'Não foi possível cadastrar o empresa. Por favor, tente novamente.';
             }
 
             return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
@@ -107,18 +117,30 @@ namespace App\Http\Controllers\Admin {
             }
 
             $request->validate([
-                'nome' => ['required', Rule::unique('tb_cliente', 'nome')->ignore($_POST['id'], 'id'), 'max:255'],
+                'razao_social' => ['required', Rule::unique('tb_empresa', 'razao_social')->ignore($request->id, 'id'), 'max:100'],
+                // 'cnpj' => ['required'],
+                // 'inscricao_estadual' => ['required'],
+                // 'inscricao_municipal' => ['required'],
+                // 'nome_fantasia' => ['required'],
+                'endereco' => ['required'],
+                'numero' => ['required'],
+                'bairro' => ['required'],
+                // 'cep' => ['required'],
+                'cidade' => ['required'],
+                'estado' => ['required'],
+                'telefone',
+                // 'imagem' => ['required'],
             ]);
 
-            $url = url('admin/clientes ');
+            $url = url('admin/empresas ');
             $type = 'back';
 
-            if ($this->cliente_model->edit($request)) {
+            if ($this->empresa_model->edit($request)) {
                 $status = 'success';
-                $message = 'Cliente atualizado com sucesso!';
+                $message = 'Empresa atualizada com sucesso!';
             } else {
                 $status = 'error';
-                $message = 'Não foi possível atualizar o cliente. Por favor, tente novamente.';
+                $message = 'Não foi possível atualizar o empresa. Por favor, tente novamente.';
             }
 
             return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
@@ -136,15 +158,15 @@ namespace App\Http\Controllers\Admin {
 
             }
 
-            $url = url('admin/clientes');
+            $url = url('admin/empresas');
             $type = null;
 
-            if ($this->cliente_model->edit($request, $field)) {
+            if ($this->empresa_model->edit($request, $field)) {
                 $status = 'success';
-                $message = 'Cliente atualizado com sucesso!';
+                $message = 'Empresa atualizado com sucesso!';
             } else {
                 $status = 'error';
-                $message = 'Não foi possível atualizar o cliente. Por favor, tente novamente.';
+                $message = 'Não foi possível atualizar o empresa. Por favor, tente novamente.';
             }
 
             return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
@@ -162,16 +184,16 @@ namespace App\Http\Controllers\Admin {
 
             }
 
-            $url = url('admin/clientes');
+            $url = url('admin/empresas');
             $type = 'back';
 
-            if ($this->cliente_model->remove($request)) {
+            if ($this->empresa_model->remove($request)) {
                 $status = 'success';
-                $message = 'Cliente removido com sucesso!';
+                $message = 'Empresa removido com sucesso!';
             } else {
                 $type = null;
                 $status = 'error';
-                $message = 'Não foi possível remover o cliente. Por favor, tente novamente.';
+                $message = $this->empresa_model->getMessage();
             }
 
             return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);

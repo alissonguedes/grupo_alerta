@@ -9,9 +9,7 @@
 
          </div>
 
-         <ul id="slide-out"
-             class="scrollbar scrollbar-primary sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow"
-             data-menu="menu-navigation" data-collapsible="menu-accordion">
+         <ul id="slide-out" class="scrollbar scrollbar-primary sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow" data-menu="menu-navigation" data-collapsible="menu-accordion">
 
              <li>
                  <a href="{{ route('admin.dashboard') }}" class="waves-effect waves-cyan">
@@ -57,6 +55,11 @@
              <li>
                  <a href="{{ route('admin.contato') }}">
                      Contato
+                 </a>
+             </li>
+             <li>
+                 <a href="{{ route('admin.empresas') }}">
+                     Empresas
                  </a>
              </li>
              {{-- <li>
@@ -113,8 +116,7 @@
              </li>
          </ul>
 
-         <a href="#" data-target="slide-out"
-             class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only">
+         <a href="#" data-target="slide-out" class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only">
              <div class="bt_mob" id="menu_mob" data-element=".menu_dashboard">
                  <img src="img/bt_mob.png" class="img_cem">
              </div>

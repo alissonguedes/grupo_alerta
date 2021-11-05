@@ -1,90 +1,97 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin {
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rule;
+    use App\Models\Admin\ConfigModel;
+    use App\Models\Admin\IdiomaModel;
+    use App\Models\Admin\MenuModel;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Session;
 
-use App\Models\Admin\ConfigModel;
-use App\Models\Admin\MenuModel;
-use App\Models\Admin\IdiomaModel;
+    class ContatoController extends Controller
+    {
 
-class ContatoController extends Controller
-{
-	public function __construct()
-	{
-		$this->config_model = new ConfigModel();
-		$this->menu_model = new MenuModel();
-		$this->idioma_model = new IdiomaModel();
-	}
+        public function __construct()
+        {
+            $this->config_model = new ConfigModel();
+            $this->menu_model = new MenuModel();
+            $this->idioma_model = new IdiomaModel();
+        }
 
-	public function index(Request $request)
-	{
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        public function index(Request $request)
+        {
+            if (!Session::has('userdata')) {
+                if ($request->ajax()) {
+                    return abort(403);
+                } else {
+                    return redirect()->route('admin.auth.login');
+                }
 
-		if ($request->ajax()) {
-			$dados['paginate'] = $this->config_model->getContato();
+            }
 
-			return view('admin.contato.list', $dados);
-		}
+            if ($request->ajax()) {
+                $dados['paginate'] = $this->config_model->getContato();
 
-		return view('admin.contato.index');
-	}
+                return view('admin.contato.list', $dados);
+            }
 
-	public function show_form(Request $request, $id = null)
-	{
+            return view('admin.contato.index');
+        }
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+        public function show_form(Request $request, $id = null)
+        {
 
-		$dados = [];
+            if (!Session::has('userdata')) {
+                if ($request->ajax()) {
+                    return abort(403);
+                } else {
+                    return redirect()->route('admin.auth.login');
+                }
 
-		if (!is_null($id)) {
-			$dados['row'] = $this->config_model->getContato($id)->first();
-		}
+            }
 
-		$dados['idiomas'] = $this->idioma_model->getIdioma();
-		$dados['menus'] = $this->menu_model->getMenu();
+            $dados = [];
 
-		return view('admin.contato.form', $dados);
-	}
+            if (!is_null($id)) {
+                $dados['row'] = $this->config_model->getContato($id)->first();
+            }
 
-	public function insert(Request $request)
-	{
+            $dados['idiomas'] = $this->idioma_model->getIdioma();
+            $dados['menus'] = $this->menu_model->getMenu();
 
-		if ( ! Session::has('userdata')) {
-			if ( $request -> ajax() )
-				return abort(403);
-			else
-				return redirect() -> route('admin.auth.login');
-		}
+            return view('admin.contato.form', $dados);
+        }
 
-		$request->validate([
-			'language' => ['required'],
-		]);
+        public function insert(Request $request)
+        {
 
-		$url = url('admin/contato ');
-		$type = '';
+            if (!Session::has('userdata')) {
+                if ($request->ajax()) {
+                    return abort(403);
+                } else {
+                    return redirect()->route('admin.auth.login');
+                }
 
-		if ($this->config_model->create($request)) {
-			$status = 'success';
-			$message = 'As configurações foram salvas com sucesso!';
-		} else {
-			$status = 'error';
-			$message = 'Não foi possível cadastrar o idioma. Por favor, tente novamente.';
-		}
+            }
 
-		return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
-	}
+            $request->validate([
+                'language' => ['required'],
+            ]);
+
+            $url = url('admin/contato ');
+            $type = '';
+
+            if ($this->config_model->create($request)) {
+                $status = 'success';
+                $message = 'As configurações foram salvas com sucesso!';
+            } else {
+                $status = 'error';
+                $message = 'Não foi possível cadastrar o idioma. Por favor, tente novamente.';
+            }
+
+            return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+        }
+
+    }
 
 }

@@ -252,6 +252,16 @@ $input_label_hidden = null;
                             </div>
                             <!-- END Celular -->
 
+                            <!-- BEGIN Celular -->
+                            <div class="row">
+                                <div class="input-field">
+                                    <i class="material-icons prefix">access_time_filled</i>
+                                    <label class="grey-text {{ !empty(get_config('horario_atendimento')) ? 'active' : null }}">Horário de atendimento (08h às 18h)</label>
+                                    <input type="tel" name="horario_atendimento" id="horario_atendimento" class="box_input" value="{{ get_config('horario_atendimento') }}">
+                                </div>
+                            </div>
+                            <!-- END Celular -->
+
                         </div>
                         <!-- END card-content -->
 
@@ -440,9 +450,11 @@ $input_label_hidden = null;
 
                                 <!-- Maps -->
                                 <div id="btn-iframe" class="col s12 pl-0 pr-0">
-                                    <div class="input-field left col s11 pl-0">
-                                        <label class="grey-text">Mapa</label>
-                                        <input type="text" name="gmaps" id="gmaps" value="{{ get_config('gmaps') }}">
+                                    <div class="col s11 pl-0">
+                                        <div class="input-field">
+                                            <label class="grey-text">Mapa</label>
+                                            <input type="text" name="gmaps" id="gmaps" value="{{ get_config('gmaps') }}">
+                                        </div>
                                     </div>
                                     <div class="col s1 right right-align pr-0 pt-4">
                                         <button type="button" class="btn right btn-floating padding-4 waves-effect activator" id="preview" data-tooltip="Ver o mapa" disabled="disabled">
