@@ -126,6 +126,9 @@ function editor() {
 	$('.full--editor').each(function() {
 		tinymce.init({
 			selector: '.' + $(this).attr('class').replace(/\s/g, '.'),
+			relative_urls: false,
+			remove_script_host: false,
+			convert_urls: true,
 
 			// images_upload_base_path: 'teste',
 			images_upload_handler: function(blobInfo, success, failure) {

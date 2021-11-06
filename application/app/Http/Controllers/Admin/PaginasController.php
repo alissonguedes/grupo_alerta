@@ -83,7 +83,7 @@ class PaginasController extends Controller
         }
 
         $request->validate([
-            'titulo' => ['required', 'unique:tb_pagina,descricao', 'max:255'],
+            'titulo' => ['required', 'unique:tb_pagina,titulo', 'max:255'],
             'menu' => ['required'],
             'texto' => ['required'],
         ]);
@@ -115,7 +115,7 @@ class PaginasController extends Controller
         }
 
         $request->validate([
-            'titulo' => ['required', Rule::unique('tb_pagina', 'descricao')->ignore($_POST['id'], 'id'), 'max:255'],
+            'titulo' => ['required', Rule::unique('tb_pagina', 'titulo')->ignore($_POST['id'], 'id'), 'max:255'],
             'menu' => ['required'],
             'texto' => ['required'],
         ]);

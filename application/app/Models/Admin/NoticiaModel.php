@@ -2,9 +2,6 @@
 
 namespace App\Models\Admin;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +11,7 @@ class NoticiaModel extends Authenticatable
 
     use HasFactory, Notifiable;
 
-	protected $table = 'tb_noticia';
+    protected $table = 'tb_noticia';
 
     /**
      * The attributes that are mass assignable.
@@ -46,22 +43,23 @@ class NoticiaModel extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-	private $order = [
-		null,
-		'descricao',
-		'status',
-	];
+    private $order = [
+        null,
+        'descricao',
+        'status',
+    ];
 
-	public function getNoticia($find = null) {
+    public function getNoticia($find = null)
+    {
 
-		$get = $this -> select('*');
+        $get = $this->select('*');
 
-		if ( !is_null($find) ) {
-			$get -> where('id', $find);
-			return $get ;
-		}
+        if (!is_null($find)) {
+            $get->where('id', $find);
+            return $get;
+        }
 
-		if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
+        if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
             $get->where(function ($get) {
                 $search = $_GET['search']['value'];
                 $get->orWhere('id', 'like', $search . '%')
@@ -70,143 +68,150 @@ class NoticiaModel extends Authenticatable
             });
         }
 
-		// Order By
-		if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0 ) {
-			$orderBy[$this -> order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
-		} else {
-			$orderBy[$this -> order[1]] = 'desc';
-		}
+        // Order By
+        if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
+            $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
+        } else {
+            $orderBy[$this->order[1]] = 'desc';
+        }
 
-		foreach($orderBy as $key => $val) {
-			$get -> orderBy($key, $val);
-		}
+        foreach ($orderBy as $key => $val) {
+            $get->orderBy($key, $val);
+        }
 
-		return $get -> paginate($_GET['length'] ?? null);
+        return $get->paginate($_GET['length'] ?? null);
 
-	}
+    }
 
-	public function create($request) {
+    public function create($request)
+    {
 
-		$path = 'assets/embaixada/img/news/';
-		$origName = null;
-		$fileName = null;
-		$imagem = null;
+        $path = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/noticias/';
+        $origName = null;
+        $fileName = null;
+        $imagem = null;
 
-		if ( $request -> file('imagem') ){
+        if ($request->file('imagem')) {
 
-			$file = $request -> file('imagem');
+            $file = $request->file('imagem');
 
-			$fileName = sha1($file -> getClientOriginalName());
-			$fileExt  = $file -> getClientOriginalExtension();
+            $fileName = sha1($file->getClientOriginalName());
+            $fileExt = $file->getClientOriginalExtension();
 
-			$imgName  = explode('.', ($file -> getClientOriginalName()));
+            $imgName = explode('.', ($file->getClientOriginalName()));
 
-			$origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
-			$imagem = limpa_string($fileName) . '.' . $fileExt;
+            $origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
+            $imagem = limpa_string($fileName) . '.' . $fileExt;
 
-			$file -> storeAs($path, $imagem);
+            $file->storeAs($path, $imagem);
 
-		}
+        }
 
-		$traducao	= [];
-		$data = [
-			'id_menu' 	=> 80, // $request -> menu,
-			'descricao'	=> $request -> descricao,
-			'slug'		=> limpa_string($request -> descricao),
-			'titulo'	=> null,
-			'subtitulo'	=> null,
-			'texto'		=> null,
-			'idioma'	=> $request -> idioma,
-			'status'	=> isset($request -> status) ? $request -> status : '0'
-		];
+        $traducao = [];
+        $data = [
+            'id_menu' => $request->menu,
+            'titulo' => $request->titulo,
+            'slug' => limpa_string($request->titulo),
+            'subtitulo' => $request->subtitulo,
+            'descricao' => $request->descricao,
+            'texto' => $request->texto,
+            'idioma' => get_config('language'),
+            'status' => isset($request->status) ? $request->status : '0',
+        ];
 
-		foreach($_POST as $ind => $val) {
+        foreach ($_POST as $ind => $val) {
 
-			$lang = explode(':', $ind);
-			if ( count($lang) == 2) {
-				$traducao[$lang[1]][$lang[0]]  = $val;
-			}
+            $lang = explode(':', $ind);
+            if (count($lang) == 2) {
+                $traducao[$lang[1]][$lang[0]] = $val;
+            }
 
-		}
+        }
 
-		if ( !is_null($imagem) )
-			$data['imagem'] = $path . $imagem;
+        if (!is_null($imagem)) {
+            $data['imagem'] = $path . $imagem;
+        }
 
-		$data['titulo'] = json_encode($traducao['titulo']);
-		$data['subtitulo'] = json_encode($traducao['subtitulo']);
-		$data['texto'] = json_encode($traducao['texto']);
+        // $data['titulo'] = json_encode($traducao['titulo']);
+        // $data['subtitulo'] = json_encode($traducao['subtitulo']);
+        // $data['texto'] = json_encode($traducao['texto']);
 
-		return $this -> insert($data);
+        return $this->insert($data);
 
-	}
+    }
 
-	public function edit($request, $field = null) {
+    public function edit($request, $field = null)
+    {
 
-		if ( is_null($field) ) {
+        if (is_null($field)) {
 
-			$path = '/assets/embaixada/img/news/';
-			$origName = null;
-			$fileName = null;
-			$imagem = null;
+            $path = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/noticias/';
+            $origName = null;
+            $fileName = null;
+            $imagem = null;
 
-			if ( $request -> file('imagem') ){
+            if ($request->file('imagem')) {
 
-				$file = $request -> file('imagem');
+                $file = $request->file('imagem');
 
-				$fileName = sha1($file -> getClientOriginalName());
-				$fileExt  = $file -> getClientOriginalExtension();
+                $fileName = sha1($file->getClientOriginalName());
+                $fileExt = $file->getClientOriginalExtension();
 
-				$imgName  = explode('.', ($file -> getClientOriginalName()));
+                $imgName = explode('.', ($file->getClientOriginalName()));
 
-				$origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
-				$imagem = limpa_string($fileName) . '.' . $fileExt;
+                $origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
+                $imagem = limpa_string($fileName) . '.' . $fileExt;
 
-				$file -> storeAs($path, $imagem);
+                $file->storeAs($path, $imagem);
 
-			}
+            }
 
-			$traducao	= [];
-			$data = [
-				'id_menu' 	=> 80, // $request -> menu,
-				'descricao'	=> $request -> descricao,
-				'slug'		=> limpa_string($request -> descricao),
-				'titulo'	=> null,
-				'subtitulo'	=> null,
-				'texto'		=> null,
-				'idioma'	=> $request -> idioma,
-				'status'	=> isset($request -> status) ? $request -> status : '0'
-			];
+            $traducao = [];
 
-			foreach($_POST as $ind => $val) {
-				$lang = explode(':', $ind);
-				if ( count($lang) == 2) {
-					$traducao[$lang[1]][$lang[0]] = $val;
-				}
-			}
+            $data = [
+                'id_menu' => $request->menu,
+                'titulo' => $request->titulo,
+                'subtitulo' => $request->subtitulo,
+                'slug' => limpa_string($request->titulo),
+                'descricao' => $request->descricao,
+                'texto' => $request->texto,
+                'idioma' => get_config('language'),
+                'status' => isset($request->status) ? $request->status : '0',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
 
-			if ( !is_null($imagem) )
-				$data['imagem'] = $path . $imagem;
+            foreach ($_POST as $ind => $val) {
+                $lang = explode(':', $ind);
+                if (count($lang) == 2) {
+                    $traducao[$lang[1]][$lang[0]] = $val;
+                }
+            }
 
-			$data['titulo'] = json_encode($traducao['titulo']);
-			$data['subtitulo'] = json_encode($traducao['subtitulo']);
-			$data['texto'] = json_encode($traducao['texto']);
+            if (!is_null($imagem)) {
+                $data['imagem'] = $path . $imagem;
+            }
 
-			return $this -> where('id', $request -> id) -> update($data);
+            // $data['titulo'] = json_encode($traducao['titulo']);
+            // $data['subtitulo'] = json_encode($traducao['subtitulo']);
+            // $data['texto'] = json_encode($traducao['texto']);
 
-		} else {
+            return $this->where('id', $request->id)->update($data);
 
-			$data = [ $field =>  $request -> value ];
+        } else {
 
-			return $this -> whereIn('id', $request -> id) -> update($data);
+            $data = [$field => $request->value];
 
-		}
+            return $this->whereIn('id', $request->id)->update($data);
 
-	}
+        }
 
-	public function remove($request) {
+    }
 
-		return $this -> whereIn('id', $request -> id) -> delete();
+    public function remove($request)
+    {
 
-	}
+        return $this->whereIn('id', $request->id)->delete();
+
+    }
 
 }
