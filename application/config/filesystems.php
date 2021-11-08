@@ -1,5 +1,7 @@
 <?php
 
+$basedir = ! file_exists('../public_html') ? 'public_html' : 'public';
+
 return [
 
     /*
@@ -37,8 +39,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            // 'root' => public_path('/'),
-            'root' => '../public/',
+            'root' => storage_path('app/' . $basedir),
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
@@ -68,7 +69,8 @@ return [
      */
 
     'links' => [
-        // storage_path('app/public') => '../public/teste/',
+        storage_path('bootstrap/cache') => 'bootstrap/cache',
+        storage_path('app/' . $basedir) => '../../../' . $basedir,
     ],
 
 ];

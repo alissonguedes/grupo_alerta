@@ -105,10 +105,20 @@ class PaginasController extends Controller
         $evenMoreUsers = [];
 
         // To é o endereço de e-mail para onde será enviado
-        Mail::to('alissonguedes87@gmail.com')
+        $send = Mail::to('alissonguedes87@gmail.com')
             ->cc($moreUsers)
             ->bcc($evenMoreUsers)
             ->send(new ContactPage($request));
+
+        if ( count(Mail::failures() ) === 0 ) {
+            $status = 'success';
+            $message = 'E-mail enviado com sucesso';
+        } else {
+            $status = 'errror';
+            $message = 'O e-mail não foi enviado corretamente. Por favor, tente novamente mais tarde.';
+        }
+
+        return json_encode([ 'status' => $status, 'message' => $message ]);
 
     }
 
