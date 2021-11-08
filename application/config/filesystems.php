@@ -1,6 +1,6 @@
 <?php
 
-$basedir = ! file_exists('../public_html') ? 'public_html' : 'public';
+$basedir = file_exists('../public_html') ? 'public_html' : 'public';
 
 return [
 
