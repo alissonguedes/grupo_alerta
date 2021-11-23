@@ -188,7 +188,7 @@ class ClienteModel extends Authenticatable {
                 $data['imagem'] = $path . $imagem;
             }
 
-//             $data['titulo'] = json_encode($traducao['titulo']);
+			// $data['titulo'] = json_encode($traducao['titulo']);
             //             $data['subtitulo'] = json_encode($traducao['subtitulo']);
             //             $data['texto'] = json_encode($traducao['texto']);
 

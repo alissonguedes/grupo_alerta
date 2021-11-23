@@ -92,6 +92,7 @@ namespace App\Http\Controllers\Admin {
         {
 
             if ($this->usuario_model->auth(null, $senha)) {
+				$this->usuario_model->update_last_login(Session::get('userdata')['id']);
                 return true;
             }
 
