@@ -1,21 +1,16 @@
 <?php
 
 namespace App\Models\Admin;
-use Illuminate\Http\Request;
-
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 
-class ClienteModel extends Authenticatable
-{
+class ClienteModel extends Authenticatable {
 
     use HasFactory, Notifiable;
 
-	protected $table = 'tb_cliente';
+    protected $table = 'tb_cliente';
 
     /**
      * The attributes that are mass assignable.
@@ -47,22 +42,22 @@ class ClienteModel extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-	private $order = [
-		null,
-		'descricao',
-		'status',
-	];
+    private $order = [
+        null,
+        'descricao',
+        'status',
+    ];
 
-	public function getCliente($find = null) {
+    public function getCliente($find = null) {
 
-		$get = $this -> select('*');
+        $get = $this->select('*');
 
-		if ( !is_null($find) ) {
-			$get -> where('id', $find);
-			return $get ;
-		}
+        if (!is_null($find)) {
+            $get->where('id', $find);
+            return $get;
+        }
 
-		if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
+        if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
             $get->where(function ($get) {
                 $search = $_GET['search']['value'];
                 $get->orWhere('id', 'like', $search . '%')
@@ -71,144 +66,148 @@ class ClienteModel extends Authenticatable
             });
         }
 
-		// Order By
-		if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0 ) {
-			$orderBy[$this -> order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
-		} else {
-			$orderBy[$this -> order[1]] = 'desc';
-		}
+        // Order By
+        if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
+            $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
+        } else {
+            $orderBy[$this->order[1]] = 'desc';
+        }
 
-		foreach($orderBy as $key => $val) {
-			$get -> orderBy($key, $val);
-		}
+        foreach ($orderBy as $key => $val) {
+            $get->orderBy($key, $val);
+        }
 
-		return $get -> paginate($_GET['length'] ?? null);
+        return $get->paginate($_GET['length'] ?? null);
 
-	}
+    }
 
-	public function create(Request $request) {
+    public function create(Request $request) {
 
-		$path = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/clientes/';
-		$origName = null;
-		$fileName = null;
-		$imagem = null;
+        $path     = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/clientes/';
+        $origName = null;
+        $fileName = null;
+        $imagem   = null;
 
-		if ( $request -> file('imagem') ){
+        if ($request->file('imagem')) {
 
-			$file = $request -> file('imagem');
+            $file = $request->file('imagem');
 
-			$fileName = sha1($file -> getClientOriginalName());
-			$fileExt  = $file -> getClientOriginalExtension();
+            $fileName = sha1($file->getClientOriginalName());
+            $fileExt  = $file->getClientOriginalExtension();
 
-			$imgName  = explode('.', ($file -> getClientOriginalName()));
+            $imgName = explode('.', ($file->getClientOriginalName()));
 
-			$origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
-			$imagem = limpa_string($fileName) . '.' . $fileExt;
+            $origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
+            $imagem   = limpa_string($fileName) . '.' . $fileExt;
 
-			$file -> storeAs($path, $imagem);
+            $file->storeAs($path, $imagem);
 
-		}
+        }
 
-		$traducao	= [];
-		$data = [
-			// 'id_menu' 	=> 80, // $request -> menu,
-			'nome'	=> $request -> nome,
-			// 'slug'		=> limpa_string($request -> descricao),
-			// 'titulo'	=> null,
-			// 'subtitulo'	=> null,
-			// 'texto'		=> null,
-			// 'idioma'	=> $request -> idioma,
-			'status'	=> isset($request -> status) ? $request -> status : '0'
-		];
+        $traducao = [];
+        $data     = [
+            // 'id_menu'     => 80, // $request -> menu,
+            'nome'   => $request->nome,
+            'site'   => $request->site,
+            // 'slug'        => limpa_string($request -> descricao),
+            // 'titulo'    => null,
+            // 'subtitulo'    => null,
+            // 'texto'        => null,
+            // 'idioma'    => $request -> idioma,
+            'status' => isset($request->status) ? $request->status : '0',
+        ];
 
-		foreach($_POST as $ind => $val) {
+        foreach ($_POST as $ind => $val) {
 
-			$lang = explode(':', $ind);
-			if ( count($lang) == 2) {
-				$traducao[$lang[1]][$lang[0]]  = $val;
-			}
+            $lang = explode(':', $ind);
+            if (count($lang) == 2) {
+                $traducao[$lang[1]][$lang[0]] = $val;
+            }
 
-		}
+        }
 
-		if ( !is_null($imagem) )
-			$data['imagem'] = $path . $imagem;
+        if (!is_null($imagem)) {
+            $data['imagem'] = $path . $imagem;
+        }
+
 //
-// 		$data['titulo'] = json_encode($traducao['titulo']);
-// 		$data['subtitulo'] = json_encode($traducao['subtitulo']);
-// 		$data['texto'] = json_encode($traducao['texto']);
+        //         $data['titulo'] = json_encode($traducao['titulo']);
+        //         $data['subtitulo'] = json_encode($traducao['subtitulo']);
+        //         $data['texto'] = json_encode($traducao['texto']);
 
-		return $this -> insert($data);
+        return $this->insert($data);
 
-	}
+    }
 
-	public function edit(Request $request, $field = null) {
+    public function edit(Request $request, $field = null) {
 
-		if ( is_null($field) ) {
+        if (is_null($field)) {
 
-			$path = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/clientes/';
-			$origName = null;
-			$fileName = null;
-			$imagem = null;
+            $path     = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/clientes/';
+            $origName = null;
+            $fileName = null;
+            $imagem   = null;
 
-			if ( $request -> file('imagem') ){
+            if ($request->file('imagem')) {
 
-				$file = $request -> file('imagem');
+                $file = $request->file('imagem');
 
-				$fileName = sha1($file -> getClientOriginalName());
-				$fileExt  = $file -> getClientOriginalExtension();
+                $fileName = sha1($file->getClientOriginalName());
+                $fileExt  = $file->getClientOriginalExtension();
 
-				$imgName  = explode('.', ($file -> getClientOriginalName()));
+                $imgName = explode('.', ($file->getClientOriginalName()));
 
-				$origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
-				$imagem = limpa_string($fileName) . '.' . $fileExt;
+                $origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
+                $imagem   = limpa_string($fileName) . '.' . $fileExt;
 
-				$file -> storeAs($path, $imagem);
+                $file->storeAs($path, $imagem);
 
-			}
+            }
 
-			$traducao	= [];
-			$data = [
-				// 'id_menu'  => 80, // $request -> menu,
-				'nome'   => $request->nome,
-				// 'slug'  => limpa_string($request -> descricao),
-				// 'titulo' => null,
-				// 'subtitulo' => null,
-				// 'texto'  => null,
-				// 'idioma' => $request -> idioma,
-				'status' => isset($request->status) ? $request->status : '0',
-			];
+            $traducao = [];
+            $data     = [
+                // 'id_menu'  => 80, // $request -> menu,
+                'nome'   => $request->nome,
+                'site'   => $request->site,
+                // 'slug'  => limpa_string($request -> descricao),
+                // 'titulo' => null,
+                // 'subtitulo' => null,
+                // 'texto'  => null,
+                // 'idioma' => $request -> idioma,
+                'status' => isset($request->status) ? $request->status : '0',
+            ];
 
+            foreach ($_POST as $ind => $val) {
+                $lang = explode(':', $ind);
+                if (count($lang) == 2) {
+                    $traducao[$lang[1]][$lang[0]] = $val;
+                }
+            }
 
-			foreach($_POST as $ind => $val) {
-				$lang = explode(':', $ind);
-				if ( count($lang) == 2) {
-					$traducao[$lang[1]][$lang[0]] = $val;
-				}
-			}
+            if (!is_null($imagem)) {
+                $data['imagem'] = $path . $imagem;
+            }
 
-			if ( !is_null($imagem) )
-				$data['imagem'] = $path . $imagem;
+//             $data['titulo'] = json_encode($traducao['titulo']);
+            //             $data['subtitulo'] = json_encode($traducao['subtitulo']);
+            //             $data['texto'] = json_encode($traducao['texto']);
 
-// 			$data['titulo'] = json_encode($traducao['titulo']);
-// 			$data['subtitulo'] = json_encode($traducao['subtitulo']);
-// 			$data['texto'] = json_encode($traducao['texto']);
+            return $this->where('id', $request->id)->update($data);
 
-			return $this -> where('id', $request -> id) -> update($data);
+        } else {
 
-		} else {
+            $data = [$field => $request->value];
 
-			$data = [ $field =>  $request -> value ];
+            return $this->whereIn('id', $request->id)->update($data);
 
-			return $this -> whereIn('id', $request -> id) -> update($data);
+        }
 
-		}
+    }
 
-	}
+    public function remove($request) {
 
-	public function remove($request) {
+        return $this->whereIn('id', $request->id)->delete();
 
-		return $this -> whereIn('id', $request -> id) -> delete();
-
-	}
+    }
 
 }
