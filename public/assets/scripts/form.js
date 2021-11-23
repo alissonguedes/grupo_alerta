@@ -541,10 +541,26 @@ var Form = {
 
 			Object.keys($field).forEach((item) => {
 
-				var label = $('[name="' + item + '"]');
+				var item = item.split('.').length > 1 ? item.split('.') : item;
+
+				if (typeof item === 'object') {
+					var name = item[0];
+					var item = item[1];
+					var label = $('[name="' + name + '[]"]')[item];
+					var field = $field[name + '.' + item];
+				} else {
+					var name = item;
+					var item = item;
+					var label = $('[name="' + name + '"]');
+					var field = $field[item];
+				}
+
+				console.log(field);
+
 				var div = $('<div/>', {
 					'class': 'error'
 				});
+
 				var icon = $('<i/>', {
 					class: 'material-icons sufix'
 				}).html('error');
@@ -553,11 +569,12 @@ var Form = {
 					.find('.error').remove();
 
 				$(label).parents('.input-field').addClass('error')
-					.append(div.append(icon, $field[item]));
+					.append(div.append(icon, field));
+
+				_element.find('.error').first().find('input').focus();
 
 			})
 
-			$(':valid').focus();
 
 		}
 
@@ -585,6 +602,7 @@ var Form = {
 
 	__button__: (label, block) => {
 
+		console.log(label, block);
 		var spinner = '<div class="preloader-wrapper small active"><div class="spinner-layer spinner-green-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>';
 
 		if (block) {

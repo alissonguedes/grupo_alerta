@@ -55,6 +55,7 @@ $input_label_hidden = null;
         </div>
         <!-- END título -->
 
+        {{--
         <!-- BEGIN título -->
         <div class="row">
             <div class="col s12 mb-1">
@@ -77,7 +78,7 @@ $input_label_hidden = null;
                     </div>
                 </div>
             </div>
-        @endforeach
+        @endforeach --}}
 
         <!-- BEGIN Status -->
         <div class="row mt-2">

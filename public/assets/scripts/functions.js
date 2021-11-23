@@ -1,3 +1,5 @@
+// const { find } = require("core-js/core/array");
+
 function preview_map() {
 
 	var reg = /[\<]iframe((\s+[\S+]+)+)?[\>](\S.+)?[\<][\/]iframe[\>]/i;
@@ -52,6 +54,44 @@ function preview_map() {
 
 }
 
+function toggle(id) {
+
+	var id = typeof id !== 'undefined' ? id : '.card';
+
+	$(id).find('.toggle[data-toggle]').each(function() {
+
+		$(this).on('click', function(e) {
+
+			console.log(id);
+
+			var content = $(this).parents('.card-content');
+			var toggle = $(this).data('toggle');
+			var toggle = content.find('.' + toggle).toggle();
+
+			if (toggle.is(':visible'))
+				$(this).find('i').text('keyboard_arrow_up')
+			else
+				$(this).find('i').text('keyboard_arrow_down')
+
+		});
+
+	});
+
+	$(id).find('.toggle').click();
+
+	$('#section').sortable({
+		revert: true
+	});
+
+	$(id).draggable({
+		'connectToSortable': '#section',
+		'stop': function() {
+			$('.card').removeAttr('style');
+		}
+	});
+
+}
+
 function resizeble() {
 
 	var index = $('#index');
@@ -93,7 +133,7 @@ function animate(component, animation, callback) {
 
 };
 
-function editor() {
+function editor(element) {
 
 	// // Editor sem barra de ferramentas
 	// $('.editor--hide_toolbar').each(function(e){
@@ -121,9 +161,9 @@ function editor() {
 
 	// });
 
-
+	var $element = typeof element === 'undefined' ? $('body').find('.full--editor') : element;
 	// Editor completo
-	$('.full--editor').each(function() {
+	$element.each(function() {
 		tinymce.init({
 			selector: '.' + $(this).attr('class').replace(/\s/g, '.'),
 			relative_urls: false,
@@ -197,7 +237,7 @@ function editor() {
 				}
 			},
 			menubar: 'favs file edit view insert format tools table help',
-			content_css: typeof $(this).data('style') !== 'undefined' ? $(this).data('style') : BASE_PATH + 'styles/style.css',
+			// content_css: typeof $(this).data('style') !== 'undefined' ? $(this).data('style') : BASE_PATH + 'styles/style.css',
 			placeholder: typeof $(this).attr('placeholder') !== 'undefined' ? $(this).attr('placeholder') : null
 		});
 	});

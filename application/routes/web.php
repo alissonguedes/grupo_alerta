@@ -49,6 +49,13 @@ Route::prefix('/admin')->group(function ($admin) {
 
     });
 
+	/** Home */
+	Route::prefix('/home')->group(function () {
+
+		Route::get('/', [Dashboard::class, 'quem_somos'])->name('admin.home.quemsomos');
+
+	});
+
     /** Banners */
     Route::prefix('banners')->group(function () {
 

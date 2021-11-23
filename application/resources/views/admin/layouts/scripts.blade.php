@@ -6,6 +6,7 @@
 <!-- plugins | jQuery/Materialize -->
 <script src="{{ asset('assets/plugins/pace/pace.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/jquery/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery/jquery-ui.js') }}"></script>
 <script src="{{ asset('assets/plugins/materializecss/materialize.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/jquery/form.js') }}"></script>
@@ -26,6 +27,7 @@
 <script src="{{ asset('assets/scripts/http/request.js') }}"></script>
 <script src="{{ asset('assets/scripts/form.js') }}"></script>
 <script src="{{ asset('assets/scripts/core.js') }}"></script>
+<script src="{{ asset('assets/scripts/banner.js') }}"></script>
 
 <!-- scripts | tacticweb -->
 <script src="{{ asset('assets/tacticweb/scripts/core.js') }}"></script>

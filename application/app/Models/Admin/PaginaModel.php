@@ -85,10 +85,22 @@ class PaginaModel extends Authenticatable
 
     }
 
+	public function getSections($id) {
+
+		$get = $this -> select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
+		$get -> from('tb_pagina_sections');
+		$get -> where('id_pagina', $id);
+		$get -> orderBy('ordem', 'ASC');
+		return $get -> get();
+
+	}
+
     public function create($request)
     {
 
-        $path = 'assets/embaixada/documentos/';
+		$section = [];
+
+	    $path = 'assets/embaixada/documentos/';
         $origName = null;
         $fileName = null;
         $arquivo = null;
@@ -99,7 +111,7 @@ class PaginaModel extends Authenticatable
             'id_menu' => $request->menu,
             'titulo' => $request->titulo,
             'slug' => limpa_string($request->titulo),
-            'subtitulo' => null,
+            'subtitulo' => $request->subtitulo,
             'descricao' => $request->descricao,
             'texto' => $request->texto,
             'idioma' => get_config('language'),
@@ -124,6 +136,42 @@ class PaginaModel extends Authenticatable
         // $data['texto'] = json_encode($traducao['texto']);
 
         if ($id = $this->insertGetId($data)) {
+
+			if ( $request->section ) {
+
+				$id_pagina = $id;
+
+				for ( $i = 0; $i < count($request->section); $i++) {
+
+					$section[$i]['id_pagina']	= $id_pagina;
+					$section[$i]['titulo']		= $request->section_title[$i];
+					$section[$i]['slug']		= limpa_string($section[$i]['titulo']);
+					$section[$i]['subtitulo']	= $request->section_subtitle[$i];
+					$section[$i]['texto']		= $request->section_text[$i];
+
+				}
+
+				foreach ( $section as $s ) {
+
+					$issetSection = $this -> select('id', 'id_pagina', 'titulo', 'slug') -> from('tb_pagina_sections')
+						-> where('id_pagina', $id_pagina)
+						// -> where('titulo', $s['titulo'])
+						// -> where('slug', $s['slug'])
+						-> get()
+						-> first();
+
+					if ( isset($issetSection) ) {
+						$this->from('tb_pagina_sections')
+							 ->where('id', $issetSection->id)
+							 ->where('id_pagina', $id_pagina)
+							 ->update($s);
+					} else {
+						$this->from('tb_pagina_sections')->insert($s);
+					}
+
+				}
+
+			}
 
             if ($request->file('arquivo')) {
 
@@ -244,7 +292,12 @@ class PaginaModel extends Authenticatable
 
                 foreach ($request->album as $album) {
 
-                    $issetAlbum = $this->from('tb_pagina_album')->select('id')->where('id_album', $album)->where('id_pagina', $request->id)->get()->first();
+                    $issetAlbum = $this->from('tb_pagina_album')
+									   ->select('id')
+									   ->where('id_album', $album)
+									   ->where('id_pagina', $request->id)
+									   ->get()
+									   ->first();
 
                     if (!isset($issetAlbum)) {
                         $this->from('tb_pagina_album')->insert(['id_pagina' => $request->id, 'id_album' => $album]);
@@ -276,6 +329,60 @@ class PaginaModel extends Authenticatable
                     $traducao[$lang[1]][$lang[0]] = $val;
                 }
             }
+
+			// Atualizar seções da página
+			if ( $request->section ) {
+
+				$id_pagina = $request->id;
+
+				for ( $i = 0; $i < count($request->section); $i++) {
+
+					$section[$i]['id_section']	= $request->section[$i];
+					$section[$i]['id_pagina']	= $id_pagina;
+					$section[$i]['titulo']		= $request->section_title[$i];
+					$section[$i]['slug']		= limpa_string($section[$i]['titulo']);
+					$section[$i]['subtitulo']	= $request->section_subtitle[$i];
+					$section[$i]['texto']		= $request->section_text[$i];
+					$section[$i]['ordem']		= $i + 1;
+
+				}
+
+				foreach ( $section as $s ) {
+
+					$data_section = [
+						'id_pagina' => $id_pagina,
+						'titulo'	=> $s['titulo'],
+						'slug'		=> $s['slug'],
+						'subtitulo'	=> $s['subtitulo'],
+						'texto'		=> $s['texto'],
+						'ordem'		=> $s['ordem']
+					];
+
+					if ( is_null($s['id_section']) ) {
+
+						$this->from('tb_pagina_sections')->insert($data_section);
+
+					} else {
+
+						$issetSection = $this -> select('id', 'id_pagina', 'titulo', 'slug')
+							-> from('tb_pagina_sections')
+							-> where('id', $s['id_section'])
+							-> where('id_pagina', $id_pagina)
+							-> get()
+							-> first();
+
+						if ( isset($issetSection) ) {
+							$this->from('tb_pagina_sections')
+								->where('id', $s['id_section'])
+								->where('id_pagina', $id_pagina)
+								->update($data_section);
+						}
+
+					}
+
+				}
+
+			}
 
             // $data['titulo'] = json_encode($traducao['titulo']);
             // $data['subtitulo'] = json_encode($traducao['subtitulo']);

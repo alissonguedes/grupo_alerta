@@ -8,6 +8,7 @@ use App\Models\Admin\PaginaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class PaginasController extends Controller
 {
@@ -63,6 +64,7 @@ class PaginasController extends Controller
             $dados['row'] = $this->pagina_model->getPagina($id)->first();
         }
 
+		$dados['sections'] = $this->pagina_model->getSections($id);
         $dados['paginas'] = $this->pagina_model->getGrupo($id);
         $dados['idiomas'] = $this->idioma_model->getIdioma();
         $dados['menus'] = $this->menu_model->getMenu();
@@ -82,13 +84,25 @@ class PaginasController extends Controller
 
         }
 
-        $request->validate([
-            'titulo' => ['required', 'unique:tb_pagina,titulo', 'max:255'],
-            'menu' => ['required'],
-            'texto' => ['required'],
-        ]);
+		$validate = [
+            'menu'				=> ['required'],
+			'titulo'			=> [
+				'required',
+				'unique:tb_pagina,titulo'
+			],
+			// 'subtitulo'			=> ['required'],
+			'descricao'			=> ['required'],
+			'section_title.*'	=> [
+				'required',
+				'unique:tb_pagina_sections,titulo'
+			],
+			'section_subtitle.*'=> ['required'],
+			'section_text.*'	=> ['required'],
+		];
 
-        $url = url('admin/paginas ');
+		$request-> validate($validate);
+
+        $url = url('admin/paginas');
         $type = 'back';
 
         if ($this->pagina_model->create($request)) {
@@ -114,18 +128,32 @@ class PaginasController extends Controller
 
         }
 
-        $request->validate([
-            'titulo' => ['required', Rule::unique('tb_pagina', 'titulo')->ignore($_POST['id'], 'id'), 'max:255'],
-            'menu' => ['required'],
-            'texto' => ['required'],
-        ]);
+		$validate = [
+            'titulo'			=> [
+				'required',
+				Rule::unique('tb_pagina', 'titulo')->ignore($_POST['id'], 'id'),
+				'max:255'
+			],
+            'menu'				=> ['required'],
+			'section_title.*'	=> [
+				'required',
+				'distinct',
+			],
+        	'arquivo'			=> 'required|max:8192'
+        ];
 
-        $request->validate([
-            'arquivo' => 'required|max:8192',
-        ]);
+		// $field = [];
+		// for ( $i = 0; $i < count($request->section); $i++){
+		// 	$validate['section_title.*'] = [
+		// 		Rule::unique('tb_pagina_sections', 'titulo') -> ignore($request->section[$i], 'id')
+		// 	];
+		// }
+
+
+        $request->validate($validate);
 
         $url = url('admin/paginas ');
-        $type = 'back';
+		$type = null;
 
         if ($this->pagina_model->edit($request)) {
             $status = 'success';
@@ -136,6 +164,7 @@ class PaginasController extends Controller
         }
 
         return json_encode(['status' => $status, 'message' => $message, 'type' => $type, 'url' => $url]);
+
     }
 
     public function update_menu()

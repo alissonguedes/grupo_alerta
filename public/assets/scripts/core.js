@@ -256,4 +256,111 @@ function core() {
 		init();
 	});
 
+	// console.log(BASE_URL);
+
+	requirejs([BASE_URL + "/../../assets/scripts/banner.js"], () => {
+
+		Banner.init();
+
+	});
+
+	toggle();
+	$('#paginas').find('input[name="section_title[]"]').on('keyup', function() {
+		$(this).parents('.card-content').find('.card-title').find('span').text(
+			$(this).val() != '' ? $(this).val() : 'Sem título'
+		);
+	});
+
+	$('#paginas').find('.add-section').on('click', function() {
+
+		var id = $(this).parents('#paginas').find('#sections').find('#section').find('.card').length + 1;
+		var id_section = 'section_' + id;
+
+		var section = '<!-- card --> \
+                        <div id="' + id_section + '" class="card"> \
+                            <!-- card-content --> \
+                            <div class="card-content"> \
+                                <div class="row"> \
+                                    <div class="col s12"> \
+                                        <h4 class="card-title">Seção - <span>Sem título</span> \
+                                            <a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light toggle" data-toggle="card-body"> \
+                                                <i class="material-icons grey-text">keyboard_arrow_up</i> \
+                                            </a> \
+                                            <a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light dropdown-trigger" data-target="page-actions"> \
+                                                <i class="material-icons grey-text">more_vert</i> \
+                                            </a> \
+                                        </h4> \
+                                    </div> \
+                                </div> \
+                                <div class="card-body mt-3"> \
+                                    <!-- BEGIN button --> \
+                                    <div class="row"> \
+                                        <div class="col s3"> \
+                                            <ul id="page-actions" class="dropdown-content"> \
+                                                {{-- <li class=""> \
+                                                    <button type="button" class="add-section" value="{{ isset($row) ? $row->id : null }}"> \
+                                                        <i class="material-icons left">add</i> Adicionar seção \
+                                                    </button> \
+                                                </li> --}} \
+                                                <li class=""> \
+                                                    <button type="button" class="del-section" value="{{ isset($row) ? $row->id : null }}"> \
+                                                        <i class="material-icons left">add</i> Remover seção \
+                                                    </button> \
+                                                </li> \
+                                            </ul> \
+                                        </div> \
+                                    </div> \
+                                    <!-- END button --> \
+                                    <!-- section --> \
+                                    <section id=""> \
+                                        <input type="hidden" name="section[]" value=""> \
+                                        <!-- BEGIN título --> \
+                                        <div class="row"> \
+                                            <div class="col s12 mb-1"> \
+                                                <div class="input-field"> \
+                                                    <label for="section_title">Título da seção</label> \
+                                                    <input type="text" name="section_title[]" class="section_title" id="section_title" value=""> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                                        <!-- END título --> \
+                                        <!-- BEGIN subtítulo --> \
+                                        <div class="row"> \
+                                            <div class="col s12 mb-1"> \
+                                                <div class="input-field"> \
+                                                    <label>Subtítulo da seção</label> \
+                                                    <input type="text" name="section_subtitle[]" id="section_subtitle" value=""> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                                        <!-- END subtítulo --> \
+                                        <!-- BEGIN Texto --> \
+                                        <div class="row"> \
+                                            <div class="col s12 mb-1"> \
+                                                <div class="input-field browser-default"> \
+                                                    <input type="text" name="section_text[]" id="section_text" value="" class="editor full--editor"> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                                        <!-- END Texto --> \
+                                    </section> \
+                                    <!-- END section --> \
+                                </div> \
+                            </div> \
+                            <!-- END card-content --> \
+                        </div> \
+                        <!-- END card -->';
+
+		$(this).parents('#sections').find('#section').append(section)
+			.find('input[name="section_title[]"]').on('keyup', function() {
+				$(this).parents('.card-content').find('.card-title').find('span').text(
+					$(this).val() != '' ? $(this).val() : 'Sem título'
+				);
+			})
+		editor($(this).parents('#sections').find('.card').find('.full--editor'));
+		toggle('#' + id);
+
+		console.log(id);
+	});
+
 }

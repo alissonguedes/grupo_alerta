@@ -175,6 +175,11 @@ textarea {
     top: -8px !important;
 }
 
+.card .dropdown-content {
+	width: auto !important;
+	top: auto !important;
+}
+
 .brand-sidebar,
 .sidenav {
     width: inherit;

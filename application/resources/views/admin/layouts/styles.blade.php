@@ -1,5 +1,6 @@
 <!-- fonts -->
 <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Barlow+Condensed:700%2C900%7CRoboto:400%7CBarlow:700" rel="stylesheet" property="stylesheet" media="all" type="text/css">
 
 <link rel="stylesheet" media="screen" href="{{ asset('assets/fonts/material-icons/material-icons.css') }}">
 <link rel="stylesheet" media="screen" href="{{ asset('assets/fonts/muli/muli.css') }}">

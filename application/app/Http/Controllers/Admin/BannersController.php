@@ -34,7 +34,8 @@ namespace App\Http\Controllers\Admin {
                 return view('admin.banners.list', $dados);
             }
 
-            return view('admin.banners.index');
+            return view('admin.banners.form-2');
+            // return view('admin.banners.index');
 
         }
 
