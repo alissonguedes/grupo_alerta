@@ -63,7 +63,7 @@ var Banner = {
 
 			var div = $('<div/>', {
 				'class': 'description',
-				'data-placeholder': 'Adicionar Texto'
+				'data-placeholder': 'Adicione um texto aqui'
 			}).css({
 				'position': 'absolute',
 				'top': '0',
@@ -74,27 +74,36 @@ var Banner = {
 				'line-height': '30px',
 				'background': '#000'
 			});
+			var input = $('<input/>', {
+				'name': '',
+				'type': 'text',
+				'disabled': true
+			});
+
+			div = $(div).append(input);
 
 			$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
 
-			$('#slider').append($(div).addClass('selected').attr('data-selected', true).draggable({
+			$('#slider').append(div.text(div.data('placeholder')).addClass('selected').attr('data-selected', true).draggable({
 				'snap': false,
 				'stack': '.description',
 				'grid': [5, 5],
 				'cursor': 'move !important'
 			}).on('dblclick', function() {
+
+				console.log(input);
+				var self = $(this);
 				$(this).css({
 						'cursor': 'text'
 					})
 					.addClass('selected')
 					.attr('data-selected', true)
 					.attr('contenteditable', true)
-					.focus()
-				$(this)
-					.val()
-					.select();
+					.focus();
+
 				$('select[name="font-family"]').attr('disabled', false).formSelect();
 				$('select[name="font-size"]').attr('disabled', false).formSelect();
+
 			}).on('click', function() {
 				if (!ctrl)
 					$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
