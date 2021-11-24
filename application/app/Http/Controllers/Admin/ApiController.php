@@ -72,7 +72,7 @@ class ApiController extends Controller {
             ->get()
             ->first();
 
-        return response(['version' => $versao->versao], 200);
+        return (float) $versao->versao;
 
     }
 
@@ -80,6 +80,23 @@ class ApiController extends Controller {
      * Obtém as atualizações do sitema
      */
     public function get_updates() {
+
+        if (Session::has('userdata') && Session::get('userdata')['id_grupo'] === 1) {
+
+            $updates     = false;
+            $fileversion = BASEDIR . 'version';
+            $new_version = (float) file_get_contents($fileversion);
+            $old_version = $this->get_version();
+
+            if ($old_version < $new_version) {
+                $updates = true;
+            }
+
+            return response(['updates' => $updates], 200);
+
+        }
+
+        return false;
 
     }
 
