@@ -363,16 +363,16 @@ function core() {
 		console.log(id);
 	});
 
-	/**
-	 * check updates
-	 */
-	$.ajax({
-		'url': 'api/updates',
-		'success': (response) => {
-
-			if (response.updates) Form.showMessage('Existem atualizações pendentes');
-
-		}
-	});
+	// 	/**
+	// 	 * check system updates
+	// 	 */
+	// 	$.ajax({
+	// 		'url': 'api/updates',
+	// 		'success': (response) => {
+	//
+	// 			if (response.updates) Form.showMessage('Existem atualizações pendentes');
+	//
+	// 		}
+	// 	});
 
 }

@@ -77,17 +77,19 @@ class ApiController extends Controller {
     }
 
     /**
-     * Obtém as atualizações do sitema
+     * Obtém as atualizações do sitema [CONTINUAR DEPOIS]
      */
     public function get_updates() {
 
         if (Session::has('userdata') && Session::get('userdata')['id_grupo'] === 1) {
 
-            $updates     = false;
-            $fileversion = BASEDIR . 'version';
-            $new_version = (float) file_get_contents($fileversion);
+            $updates = false;
+            // $fileversion = BASEDIR . 'version';
+            $fileversion = file_get_contents('CAMINHO_DO_ARQUIVO_AQUI');
+            $new_version = file_put_contents($fileversion, BASEDIR . 'version', FILE_APPEND);
             $old_version = $this->get_version();
 
+            dump($new_version);
             if ($old_version < $new_version) {
                 $updates = true;
             }
