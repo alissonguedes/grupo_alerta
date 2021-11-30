@@ -2,12 +2,13 @@ var Banner = {
 
 	init: () => {
 
-		// 		var c = document.getElementById("slider").getContext("2d");
-		// 		var img = new Image();
-		//
-		// 		img.onload = function() {
-		// 			c.drawImage(img, 0, 0);
-		// 		}
+		var ctrl = false;
+		$(document).on('keydown keyup', function(e) {
+			if (e.which === 17 && e.type === 'keydown') ctrl = true;
+			if (e.which === 17 && e.type === 'keyup') ctrl = false;
+
+			console.log(ctrl);
+		})
 
 		$('#banner-maker').find('input[type="file"]').on('change', function() {
 
@@ -19,10 +20,12 @@ var Banner = {
 			var div = $('<div/>', {
 				'class': 'draggable',
 			}).draggable({
-				'snap': true,
-				'stack': '.description',
+				'snap': false,
 				'grid': [5, 5],
-				'cursor': 'move !important'
+				'cursor': 'move !important',
+				'start': function(a, b, c) {
+					console.log(a, b, c);
+				}
 			})
 
 			var img = $('<img/>', {
@@ -31,7 +34,10 @@ var Banner = {
 			});
 
 			$('#slider').find('.draggable').remove();
-			$('#slider').append($(div).append(img));
+			$('#slider').append($(div).on('click', function() {
+				if (!ctrl)
+					$(this).parent().find('.selected').removeClass('selected');
+			}).append(img));
 			// img.src = src;
 
 		});
@@ -48,14 +54,6 @@ var Banner = {
 
 		});
 
-		var ctrl = false;
-		$(document).on('keydown keyup', function(e) {
-			if (e.which === 17 && e.type === 'keydown') ctrl = true;
-			if (e.which === 17 && e.type === 'keyup') ctrl = false;
-
-			console.log(ctrl);
-		})
-
 		$('#add_texto').on('click', function() {
 
 			$('select[name="font-family"]').attr('disabled', false).formSelect();
@@ -63,7 +61,7 @@ var Banner = {
 
 			var div = $('<div/>', {
 				'class': 'description',
-				'data-placeholder': 'Adicionar Texto'
+				'data-placeholder': 'Adicione um texto aqui'
 			}).css({
 				'position': 'absolute',
 				'top': '0',
@@ -74,45 +72,143 @@ var Banner = {
 				'line-height': '30px',
 				'background': '#000'
 			});
+			var input = $('<input/>', {
+				'name': '',
+				'type': 'text',
+				'disabled': true
+			});
+
+			div = $(div).append(input);
 
 			$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
 
-			$('#slider').append($(div).addClass('selected').attr('data-selected', true).draggable({
-				'snap': false,
-				'stack': '.description',
-				'grid': [5, 5],
-				'cursor': 'move !important'
-			}).on('dblclick', function() {
-				$(this).css({
+			$('#slider').find('.layer,.draggable').on('click', function() {
+				if (!ctrl)
+					$(this).parent().find('.selected').removeClass('selected');
+			})
+
+			var width = $('#slider').width();
+			var height = $('#slider').height();
+
+			$('#slider').append(
+				div.text(
+					div.data('placeholder')
+				).addClass('selected')
+				.attr('data-selected', true)
+				.draggable({
+					'containment': 'parent',
+					'scroll': false,
+					'snap': false,
+					'stack': '.description',
+					'grid': [10, 10],
+					'cursor': 'move !important',
+					'drag': function(e, p) {
+
+						var t = p.position.top,
+							l = p.position.left,
+							b = 0,
+							r = 0,
+							w = Math.round(width),
+							h = Math.round(height - 1),
+							this_height = Math.round($(this).height()),
+							this_width = Math.round($(this).width());
+
+						var s = [];
+
+						$(this).attr('style').split(';').forEach(function(e) {
+
+							var style = e.trim().split(':');
+
+							if (style[0] == 'top') {
+
+								if (t >= h / 2) {
+									style[0] = 'bottom';
+									style[1] = (h - t - this_height) + 'px';
+									$(this).css({
+										'top': '',
+									});
+								}
+
+							}
+
+							if (style[0] == 'left') {
+
+								if (l >= w / 2) {
+									style[0] = 'right';
+									style[1] = (w - l - this_width) + 'px';
+									$(this).css({
+										'left': ''
+									});
+								}
+
+							}
+
+							s.push(style);
+
+						});
+
+						var self = $(this);
+						var css = '';
+
+						s.forEach(function(e) {
+							if (e.length > 1)
+								css += e[0].trim() + ': ' + e[1] + ';';
+						});
+
+						console.log(css);
+						self.attr('style', css);
+
+					},
+
+				}).on('dblclick', function() {
+
+					var self = $(this);
+					$(this).css({
+							'cursor': 'text'
+						})
+						.addClass('selected')
+						.attr('data-selected', true)
+						.attr('contenteditable', true)
+						.focus();
+
+					$('select[name="font-family"]').attr('disabled', false).formSelect();
+					$('select[name="font-size"]').attr('disabled', false).formSelect();
+
+				}).on('mousedown', function() {
+					$(this).css({
+						'cursor': 'move'
+					});
+					$(this).addClass('selected')
+						.attr('data-selected', true);
+				}).on('mouseup', function() {
+					$(this).css({
 						'cursor': 'text'
 					})
-					.addClass('selected')
-					.attr('data-selected', true)
-					.attr('contenteditable', true)
-					.focus()
-				$(this)
-					.val()
-					.select();
-				$('select[name="font-family"]').attr('disabled', false).formSelect();
-				$('select[name="font-size"]').attr('disabled', false).formSelect();
-			}).on('click', function() {
-				if (!ctrl)
+				}).on('click', function() {
+					if (!ctrl)
+						$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
+
+					if ($(this).attr('contenteditable'))
+						$(this).css({
+							'cursor': 'text'
+						})
+					else
+						$(this).css({
+							'cursor': 'default'
+						})
+
+					$(this).addClass('selected')
+						.attr('data-selected', true);
+					$('select[name="font-family"]').attr('disabled', false).formSelect();
+					$('select[name="font-size"]').attr('disabled', false).formSelect();
+				}).on('blur', function() {
 					$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
-				$(this).css({
-						'cursor': 'default'
-					})
-					.addClass('selected')
-					.attr('data-selected', true);
-				$('select[name="font-family"]').attr('disabled', false).formSelect();
-				$('select[name="font-size"]').attr('disabled', false).formSelect();
-			}).on('blur', function() {
-				$('#slider').find('.description').removeClass('selected').attr('data-selected', false);
-				$(this).css({
-					'cursor': 'move'
-				}).attr('contenteditable', false);
-				$('select[name="font-family"]').attr('disabled', true).formSelect();
-				$('select[name="font-size"]').attr('disabled', true).formSelect();
-			}));
+					$(this).css({
+						'cursor': 'move'
+					}).attr('contenteditable', false);
+					$('select[name="font-family"]').attr('disabled', true).formSelect();
+					$('select[name="font-size"]').attr('disabled', true).formSelect();
+				}));
 
 		});
 

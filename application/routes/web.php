@@ -40,6 +40,7 @@ Route::prefix('/admin')->group(function ($admin) {
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.auth.logout');
     Route::get('/api/token', [ApiController::class, 'token'])->name('api.token');
     Route::post('/api/tinymce', [ApiController::class, 'upload_img_tinymce'])->name('api.tinymce');
+    Route::get('/api/updates', [ApiController::class, 'get_updates']);
 
     /** Login */
     Route::prefix('login')->group(function () {
@@ -49,12 +50,12 @@ Route::prefix('/admin')->group(function ($admin) {
 
     });
 
-	/** Home */
-	Route::prefix('/home')->group(function () {
+    /** Home */
+    Route::prefix('/home')->group(function () {
 
-		Route::get('/', [Dashboard::class, 'quem_somos'])->name('admin.home.quemsomos');
+        Route::get('/', [Dashboard::class, 'quem_somos'])->name('admin.home.quemsomos');
 
-	});
+    });
 
     /** Banners */
     Route::prefix('banners')->group(function () {

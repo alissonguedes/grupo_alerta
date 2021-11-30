@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models\Main {
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class ParceiroModel extends Model {
+
+        protected $_table = 'tb_cliente';
+
+        public function getParceiros() {
+            return $this
+                ->where('status', '1')
+				->get();
+        }
+
+    }
+
+}

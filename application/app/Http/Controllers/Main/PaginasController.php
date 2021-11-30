@@ -6,26 +6,25 @@ use App\Mail\ContactPage;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
+use App\Models\Main\ParceiroModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
-class PaginasController extends Controller
-{
+class PaginasController extends Controller {
 
-    public function __construct()
-    {
-        $this->banner_model = new BannerModel();
-        $this->pagina_model = new PaginaModel();
-        $this->news_model = new NoticiaModel();
+    public function __construct() {
+        $this->banner_model   = new BannerModel();
+        $this->pagina_model   = new PaginaModel();
+        $this->news_model     = new NoticiaModel();
+        $this->parceiro_model = new ParceiroMOdel();
     }
 
-    public function index($menu = null, $page = null)
-    {
+    public function index($menu = null, $page = null) {
 
         $dados['pagina_model'] = $this->pagina_model;
 
         $dados['paginas'] = $this;
-        $pagina = $this->pagina_model->getPagina($menu);
+        $pagina           = $this->pagina_model->getPagina($menu);
 
         if (isset($pagina)) {
 
@@ -42,20 +41,20 @@ class PaginasController extends Controller
 
     }
 
-    public function grupo(Request $request)
-    {
+    public function grupo(Request $request) {
 
-        return view('main.paginas.grupo');
+        $dados['parceiros'] = $this->parceiro_model->getParceiros();
+
+        return view('main.paginas.grupo', $dados);
 
     }
 
-    public function fotos($page, $album = null)
-    {
+    public function fotos($page, $album = null) {
 
         $dados['page'] = $page;
 
         $dados['albuns'] = $this->pagina_model->getAlbuns();
-        $dados['album'] = $this->pagina_model->getAlbuns($album);
+        $dados['album']  = $this->pagina_model->getAlbuns($album);
 
         if (!is_null($album)) {
             return view('main.galeria.fotos', $dados);
@@ -65,30 +64,27 @@ class PaginasController extends Controller
 
     }
 
-    public function orcamento(Request $request)
-    {
+    public function orcamento(Request $request) {
 
         return view('main.paginas.orcamento');
 
     }
 
-    public function contato(Request $request)
-    {
+    public function contato(Request $request) {
 
         return view('main.paginas.contato');
 
     }
 
-    public function send_contact_form(Request $request)
-    {
+    public function send_contact_form(Request $request) {
 
         $validate = [
-            'nome' => 'required',
-            'email' => 'required',
+            'nome'     => 'required',
+            'email'    => 'required',
             'telefone' => 'required',
             'endereco' => 'required',
-            'cidade' => 'required',
-            'estado' => 'required',
+            'cidade'   => 'required',
+            'estado'   => 'required',
         ];
 
         if (!$request->outros_servicos && is_null($request->servicos)) {
@@ -101,29 +97,18 @@ class PaginasController extends Controller
 
         $request->validate($validate);
 
-        $moreUsers = [];
+        $moreUsers     = [];
         $evenMoreUsers = [];
 
         // To é o endereço de e-mail para onde será enviado
-        $send = Mail::to('alissonguedes87@gmail.com')
+        Mail::to('alissonguedes87@gmail.com')
             ->cc($moreUsers)
             ->bcc($evenMoreUsers)
             ->send(new ContactPage($request));
 
-        if ( count(Mail::failures() ) === 0 ) {
-            $status = 'success';
-            $message = 'E-mail enviado com sucesso';
-        } else {
-            $status = 'errror';
-            $message = 'O e-mail não foi enviado corretamente. Por favor, tente novamente mais tarde.';
-        }
-
-        return json_encode([ 'status' => $status, 'message' => $message ]);
-
     }
 
-    public function getMenus($id_menu, $id_parent = 0)
-    {
+    public function getMenus($id_menu, $id_parent = 0) {
 
         $ul = '';
         $li = '';

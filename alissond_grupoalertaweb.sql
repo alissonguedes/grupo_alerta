@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.0.4deb2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 23/11/2021 às 14:48
--- Versão do servidor: 10.3.31-MariaDB-0ubuntu0.20.04.1
--- Versão do PHP: 7.4.3
+-- Tempo de geração: 25/11/2021 às 16:57
+-- Versão do servidor: 10.5.12-MariaDB-0+deb11u1
+-- Versão do PHP: 7.4.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -171,6 +170,7 @@ CREATE TABLE `tb_acl_usuario` (
   `salt` varchar(255) DEFAULT NULL,
   `ultimo_login` datetime DEFAULT NULL,
   `permissao` smallint(4) UNSIGNED ZEROFILL NOT NULL DEFAULT 0000,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL,
   `status` enum('0','1') NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tabela para cadastro de usuários';
@@ -179,13 +179,8 @@ CREATE TABLE `tb_acl_usuario` (
 -- Despejando dados para a tabela `tb_acl_usuario`
 --
 
-INSERT INTO `tb_acl_usuario` (`id`, `id_grupo`, `id_gestor`, `nome`, `email`, `login`, `senha`, `salt`, `ultimo_login`, `permissao`, `updated_at`, `status`) VALUES
-(1, 1, 0, 'Alisson', 'alisson', 'alissonguedes87@gmail.com', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3', NULL, '2021-03-08 22:40:38', 0110, NULL, '1'),
-(2, 2, 0, 'Edvan', 'edvan', 'edvan', 'b123e9e19d217169b981a61188920f9d28638709a513220168', NULL, '2021-03-03 08:38:46', 0000, NULL, '1'),
-(3, 1, 0, 'Alisson', 'alissonguedes87@gmail.com', 'alisson', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3', NULL, '0000-00-00 00:00:00', 0000, NULL, '1'),
-(4, 1, 0, 'Felipe', 'felipeweb@hotmail.com', 'felipeweb', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3', NULL, '0000-00-00 00:00:00', 0000, NULL, '1'),
-(5, 2, 0, 'teste', 'teste@teste.com', 'teste', 'b123e9e19d217169b981a61188920f9d28638709a513220168', NULL, '0000-00-00 00:00:00', 0000, NULL, '1'),
-(6, 2, 0, 'Isaac Brigano', 'isaacbrigano@email.com', 'isaacbrigano', 'd866fcd2a66112773d45e594e2b7be2c4e095a2c54419c78c1', NULL, '0000-00-00 00:00:00', 0000, NULL, '1');
+INSERT INTO `tb_acl_usuario` (`id`, `id_grupo`, `id_gestor`, `nome`, `email`, `login`, `senha`, `salt`, `ultimo_login`, `permissao`, `created_at`, `updated_at`, `status`) VALUES
+(3, 1, 0, 'Alisson', 'alissonguedes87@gmail.com', 'alisson', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3', NULL, '2021-11-25 12:06:26', 0000, '2021-11-23 18:31:32', '2021-11-25 15:06:26', '1');
 
 -- --------------------------------------------------------
 
@@ -284,7 +279,8 @@ CREATE TABLE `tb_banner` (
 
 INSERT INTO `tb_banner` (`id`, `titulo`, `alias`, `descricao`, `clicks`, `link`, `imagem`, `original_name`, `imgsize`, `dataadd`, `autor`, `ordem`, `publish_up`, `publish_down`, `updated_at`, `created_at`, `tags`, `status`) VALUES
 (10, 'Teste', NULL, NULL, 0, 'teste', 'assets/grupoalertaweb/wp-content/uploads/2021/11/banners/eb0208e98ffe319db076d9c1dba536402eb53878.jpg', 'slider_02_a.jpg', 0, '2021-10-30 16:32:13', '1', 0, NULL, NULL, '2021-11-01 07:53:00', '2021-10-30 16:32:13', NULL, '1'),
-(11, 'asdf', NULL, 'asdf', 0, 'asdf', 'assets/grupoalertaweb/wp-content/uploads/2021/11/banners/a9620cf1e8985468638f13ae7df36cd10ac58fe6.jpg', 'slider_03_a.jpg', 0, '2021-11-01 01:02:38', '1', 0, NULL, NULL, '2021-11-01 07:21:48', '2021-11-01 01:02:38', NULL, '1');
+(11, 'asdf', NULL, 'asdf', 0, 'asdf', 'assets/grupoalertaweb/wp-content/uploads/2021/11/banners/a9620cf1e8985468638f13ae7df36cd10ac58fe6.jpg', 'slider_03_a.jpg', 0, '2021-11-01 01:02:38', '1', 0, NULL, NULL, '2021-11-01 07:21:48', '2021-11-01 01:02:38', NULL, '1'),
+(13, '2', NULL, NULL, 0, '2', 'assets/grupoalertaweb/wp-content/uploads/2021/11/banners/cbccf905014d4c2147e769291a273148f8def1b2.png', 'client_05.png', 0, '2021-11-25 15:07:29', '3', 0, NULL, NULL, NULL, '2021-11-25 15:07:29', NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -296,6 +292,7 @@ CREATE TABLE `tb_cliente` (
   `id` int(10) UNSIGNED NOT NULL,
   `nome` varchar(100) NOT NULL,
   `imagem` varchar(255) DEFAULT NULL,
+  `site` varchar(255) DEFAULT NULL,
   `descricao` text DEFAULT NULL,
   `rua` varchar(100) DEFAULT NULL,
   `cep` varchar(9) DEFAULT NULL,
@@ -312,11 +309,11 @@ CREATE TABLE `tb_cliente` (
 -- Despejando dados para a tabela `tb_cliente`
 --
 
-INSERT INTO `tb_cliente` (`id`, `nome`, `imagem`, `descricao`, `rua`, `cep`, `bairro`, `cidade`, `uf`, `complemento`, `created_at`, `updated_at`, `status`) VALUES
-(3, 'Especial Force', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/561a1f62c460e7cec951686a0318ed032653e896.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-01 01:34:35', '2021-11-05 16:01:20', '1'),
-(4, 'Especial CCtv Justice', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/ec785880cde5f31a4a7e59b41ebd996d68771c47.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:01:39', NULL, '1'),
-(5, 'Fireman Departament', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/10965c7c4ada40d8ea75cd25a1ebbba2fa75d72e.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:01:56', NULL, '1'),
-(6, 'Solution Giome', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/6b3af6b5a05bfd14c01829d24b503b0f9a7a89d6.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:02:11', NULL, '1');
+INSERT INTO `tb_cliente` (`id`, `nome`, `imagem`, `site`, `descricao`, `rua`, `cep`, `bairro`, `cidade`, `uf`, `complemento`, `created_at`, `updated_at`, `status`) VALUES
+(3, 'Especial Force', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/561a1f62c460e7cec951686a0318ed032653e896.png', 'http://localhost/teste', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-01 01:34:35', '2021-11-23 18:09:54', '1'),
+(4, 'Especial CCtv Justice', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/ec785880cde5f31a4a7e59b41ebd996d68771c47.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:01:39', NULL, '1'),
+(5, 'Fireman Departament', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/10965c7c4ada40d8ea75cd25a1ebbba2fa75d72e.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:01:56', NULL, '1'),
+(6, 'Solution Giome', 'assets/grupoalertaweb/wp-content/uploads/2021/11/clientes/6b3af6b5a05bfd14c01829d24b503b0f9a7a89d6.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-11-05 13:02:11', NULL, '1');
 
 -- --------------------------------------------------------
 
@@ -658,6 +655,18 @@ CREATE TABLE `tb_produto_categoria` (
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `tb_sys_changelog`
+--
+
+CREATE TABLE `tb_sys_changelog` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `id_versao` int(11) UNSIGNED NOT NULL,
+  `log` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `tb_sys_config`
 --
 
@@ -697,7 +706,8 @@ INSERT INTO `tb_sys_config` (`id`, `config`, `value`, `created_at`, `updated_at`
 (21, 'gmaps', NULL, '2021-11-01 05:13:34', '2021-11-05 20:35:20'),
 (22, 'original_logo_name', 'logo_dark.png', '2021-11-01 05:25:29', '2021-11-01 05:25:29'),
 (23, 'imagem', NULL, '2021-11-05 12:59:28', '2021-11-05 20:35:19'),
-(24, 'horario_atendimento', 'Atendimento de segunda à sábado, das 8h às 18h.', '2021-11-05 15:01:45', '2021-11-05 20:35:20');
+(24, 'horario_atendimento', 'Atendimento de segunda à sábado, das 8h às 18h.', '2021-11-05 15:01:45', '2021-11-05 20:35:20'),
+(25, 'version', '2.0', '2021-11-24 16:45:07', '2021-11-24 16:45:07');
 
 -- --------------------------------------------------------
 
@@ -748,8 +758,23 @@ CREATE TABLE `tb_sys_idioma_dicionario` (
   `traducao` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Índices de tabelas apagadas
+-- Estrutura para tabela `tb_sys_version`
+--
+
+CREATE TABLE `tb_sys_version` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `versao` varchar(5) NOT NULL,
+  `status` enum('0','1') NOT NULL DEFAULT '1',
+  `lancamento` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Índices para tabelas despejadas
 --
 
 --
@@ -949,6 +974,13 @@ ALTER TABLE `tb_produto_categoria`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices de tabela `tb_sys_changelog`
+--
+ALTER TABLE `tb_sys_changelog`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_tb_sys_changelog` (`id_versao`);
+
+--
 -- Índices de tabela `tb_sys_config`
 --
 ALTER TABLE `tb_sys_config`
@@ -977,7 +1009,13 @@ ALTER TABLE `tb_sys_idioma_dicionario`
   ADD KEY `fk_tb_sys_idioma_id_idioma` (`id_idioma`);
 
 --
--- AUTO_INCREMENT de tabelas apagadas
+-- Índices de tabela `tb_sys_version`
+--
+ALTER TABLE `tb_sys_version`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
@@ -1020,7 +1058,7 @@ ALTER TABLE `tb_acl_rotas`
 -- AUTO_INCREMENT de tabela `tb_acl_usuario`
 --
 ALTER TABLE `tb_acl_usuario`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `tb_acl_usuario_imagem`
@@ -1044,7 +1082,7 @@ ALTER TABLE `tb_attachment`
 -- AUTO_INCREMENT de tabela `tb_banner`
 --
 ALTER TABLE `tb_banner`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Numero sequencial', AUTO_INCREMENT=13;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Numero sequencial', AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `tb_cliente`
@@ -1149,10 +1187,16 @@ ALTER TABLE `tb_produto_categoria`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de tabela `tb_sys_changelog`
+--
+ALTER TABLE `tb_sys_changelog`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `tb_sys_config`
 --
 ALTER TABLE `tb_sys_config`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Número sequencial da tabela.', AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Número sequencial da tabela.', AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de tabela `tb_sys_dicionario`
@@ -1173,7 +1217,13 @@ ALTER TABLE `tb_sys_idioma_dicionario`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Restrições para dumps de tabelas
+-- AUTO_INCREMENT de tabela `tb_sys_version`
+--
+ALTER TABLE `tb_sys_version`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
 --
 
 --
@@ -1282,6 +1332,12 @@ ALTER TABLE `tb_pagina_sections`
 --
 ALTER TABLE `tb_produto`
   ADD CONSTRAINT `tb_produto_id_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `tb_produto_categoria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Restrições para tabelas `tb_sys_changelog`
+--
+ALTER TABLE `tb_sys_changelog`
+  ADD CONSTRAINT `fk_tb_sys_changelog` FOREIGN KEY (`id_versao`) REFERENCES `tb_sys_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Restrições para tabelas `tb_sys_idioma_dicionario`
