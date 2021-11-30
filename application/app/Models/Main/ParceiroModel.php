@@ -6,11 +6,10 @@ namespace App\Models\Main {
 
     class ParceiroModel extends Model {
 
-        protected $_table = 'tb_cliente';
+        protected $table = 'tb_cliente';
 
         public function getParceiros() {
-            return $this
-                ->where('status', '1')
+            return $this->where('status', '1')
 				->get();
         }
 
