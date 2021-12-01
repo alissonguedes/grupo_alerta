@@ -65,7 +65,7 @@ $input_label_hidden = null;
 			</div>
 			<!-- END imagem -->
 
-			<!-- BEGIN título -->
+			<!-- BEGIN site -->
 			<div class="row">
 				<div class="col s12 mb-1">
 					<div class="input-field">
@@ -74,7 +74,7 @@ $input_label_hidden = null;
 					</div>
 				</div>
 			</div>
-			<!-- END título -->
+			<!-- END site -->
 
 			<!-- BEGIN Descricao -->
 			<div class="row">

@@ -1,3 +1,9 @@
 VERSION=2.0
 # 2.0
 - Atualização de dados de segurança
+        modified:   application/app/Models/Admin/MenuModel.php
+        modified:   application/app/Models/Main/PaginaModel.php
+        modified:   application/resources/views/admin/clientes/form.blade.php
+        modified:   application/resources/views/admin/menus/form.blade.php
+        modified:   application/resources/views/main/layouts/menu.blade.php
+        modified:   application/routes/web.php

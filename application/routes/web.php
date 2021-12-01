@@ -334,8 +334,8 @@ Route::prefix('/')->group(function () {
     $menus = new PaginaModel();
 
     foreach ($menus->getMenus() as $menu) {
-        Route::get('{' . $menu->link . '}', [Paginas::class, 'index']);
-        Route::get('{' . $menu->link . '}/{param?}', [Paginas::class, 'index']);
+        Route::get('{' . $menu->slug . '}', [Paginas::class, 'index']);
+        Route::get('{' . $menu->slug . '}/{param?}', [Paginas::class, 'index']);
     }
 
 });

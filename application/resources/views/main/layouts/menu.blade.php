@@ -73,15 +73,15 @@ $empresa = $empresa
                                 foreach ($menus as $menu):
                                     $submenus = $m_menus->getSubPages($menu->id);
 
-                                    $link = $submenus->count() == 0 ? url($menu->link) : '#';
+									$link = !is_null($menu->link) ? $menu->link : ($submenus->count() == 0 ? $menu->slug : '#');
                                     $class_has_children = $submenus->count() > 0 ? 'menu-item-has-children' : null;
 
                                     echo '<li class="menu-item menu-item-type-custom menu-item-object-custom ' . $class_has_children . '">';
-                                    echo '  <a href="' . $link . '">' . $menu->label . '</a>';
-                                    if ($submenus->count() > 0):
+                                    echo '  <a href="' . url($link) . '">' . $menu->label . '</a>';
+                                    if (is_null($menu->link) && $submenus->count() > 0):
                                         echo '<ul class="sub-menu">';
                                         foreach ($submenus as $sub):
-                                            $link = url($menu->link . '/' . $sub->slug);
+                                            $link = url($menu->slug . '/' . $sub->slug);
                                             echo '<li class="menu-item menu-item-type-post_type menu-item-object-dsvy-service"><a href="' . $link . '">' . $sub->titulo . '</a></li>';
                                         endforeach;
                                         echo '</ul>';

@@ -8,25 +8,25 @@ $input_label_hidden = null;
 
 @if (session()->get('userdata')['id_grupo'] > 1)
 
-    {? $disabled = isset($row) && $row->editavel === '0' ? 'disabled="disabled"' : false; ?}
+	{? $disabled = isset($row) && $row->editavel === '0' ? 'disabled="disabled"' : false; ?}
 
-    @if ($disabled)
-        {? $input_label_hidden = $row -> label; ?}
-        {? $editavel = $row->editavel; ?}
-    @else
-        {? $editavel = 1; ?}
-    @endif
+	@if ($disabled)
+		{? $input_label_hidden = $row -> label; ?}
+		{? $editavel = $row->editavel; ?}
+	@else
+		{? $editavel = 1; ?}
+	@endif
 
 @endif
 
 @section('title', (isset($row) ? 'Editar' : 'Novo') . ' menu')
 
 @section('buttons')
-    @if (isset($row))
-        <button class="btn btn-large excluir waves-effect" value="{{ isset($row) ? $row->id : null }}" data-tooltip="Excluir" data-link="{{ route('admin.paginas.delete') }}" style="border: none">
-            <i class="material-icons">delete_forever</i>
-        </button>
-    @endif
+	@if (isset($row))
+		<button class="btn btn-large excluir waves-effect" value="{{ isset($row) ? $row->id : null }}" data-tooltip="Excluir" data-link="{{ route('admin.paginas.delete') }}" style="border: none">
+			<i class="material-icons">delete_forever</i>
+		</button>
+	@endif
 @endsection
 
 {{-- @section('tabs')
@@ -42,21 +42,20 @@ $input_label_hidden = null;
 
 @section('form')
 
-    <form method="post" action="{{ route('admin.menus.insert') }}" novalidate enctype="multipart/form-data" autocomplete="off">
+	<form method="post" action="{{ route('admin.menus.insert') }}" novalidate enctype="multipart/form-data" autocomplete="off">
 
-        <!-- BEGIN título -->
-        <div class="row">
-            <div class="col s12 mb-1">
-                <div class="input-field mb-2">
-                    <label class="">Rótulo</label>
-                    <input type="text" {{ !$disabled ? 'name=label' : null }} id="label" class="box_input" value="{{ isset($row) ? $row->label : null }}" {{ $disabled }} autofocus="autofocus">
-                </div>
-            </div>
-        </div>
-        <!-- END título -->
+		<!-- BEGIN título -->
+		<div class="row">
+			<div class="col s12 mb-1">
+				<div class="input-field mb-2">
+					<label class="">Rótulo</label>
+					<input type="text" {{ !$disabled ? 'name=label' : null }} id="label" class="box_input" value="{{ isset($row) ? $row->label : null }}" {{ $disabled }} autofocus="autofocus">
+				</div>
+			</div>
+		</div>
+		<!-- END título -->
 
-        {{--
-        <!-- BEGIN título -->
+		{{-- <!-- BEGIN título -->
         <div class="row">
             <div class="col s12 mb-1">
                 <div class="input-field">
@@ -80,73 +79,84 @@ $input_label_hidden = null;
             </div>
         @endforeach --}}
 
-        <!-- BEGIN Status -->
-        <div class="row mt-2">
+		<!-- BEGIN link -->
+		<div class="row">
+			<div class="col s12 mb-1">
+				<div class="input-field">
+					<label>Link</label>
+					<input type="url" name="link" id="link" value="{{ isset($row) ? $row->link : null }}">
+				</div>
+			</div>
+		</div>
+		<!-- END link -->
 
-            <div class="col s12 mb-1">
-                <label for="status">Ativo</label>
-                <div class="switch right">
-                    <label class=" no-margin">
-                        {? $checked = !isset($row) || (isset($row) && $row->status === '1') ? 'checked="checked"' : null; ?}
-                        <input type="checkbox" name="status" id="status" value="1" {{ $checked }}>
-                        <span class="lever no-margin"></span>
-                    </label>
-                </div>
-            </div>
+		<!-- BEGIN Status -->
+		<div class="row mt-2">
 
-        </div>
-        <!-- END Status -->
+			<div class="col s12 mb-1">
+				<label for="status">Ativo</label>
+				<div class="switch right">
+					<label class=" no-margin">
+						{? $checked = !isset($row) || (isset($row) && $row->status === '1') ? 'checked="checked"' : null; ?}
+						<input type="checkbox" name="status" id="status" value="1" {{ $checked }}>
+						<span class="lever no-margin"></span>
+					</label>
+				</div>
+			</div>
 
-        <!-- BEGIN Editável -->
-        @if (session()->get('userdata')['id_grupo'] === 1)
-            <div class="row mt-2">
+		</div>
+		<!-- END Status -->
 
-                <div class="col s12 mb-1">
-                    <label for="editavel">Editável</label>
-                    <div class="switch right">
-                        <label class=" no-margin">
-                            {? $checked = !isset($row) || (isset($row) && $row->editavel === '1') ? 'checked="checked"' : null; ?}
-                            <input type="checkbox" name="editavel" id="editavel" value="1" {{ $checked }}>
-                            <span class="lever no-margin"></span>
-                        </label>
-                    </div>
-                </div>
+		<!-- BEGIN Editável -->
+		@if (session()->get('userdata')['id_grupo'] === 1)
+			<div class="row mt-2">
 
-            </div>
-        @endif
-        <!-- END Editável -->
+				<div class="col s12 mb-1">
+					<label for="editavel">Editável</label>
+					<div class="switch right">
+						<label class=" no-margin">
+							{? $checked = !isset($row) || (isset($row) && $row->editavel === '1') ? 'checked="checked"' : null; ?}
+							<input type="checkbox" name="editavel" id="editavel" value="1" {{ $checked }}>
+							<span class="lever no-margin"></span>
+						</label>
+					</div>
+				</div>
 
-        <div class="row">
+			</div>
+		@endif
+		<!-- END Editável -->
 
-            <div class="col s12 mb-1 mt-3">
+		<div class="row">
 
-                <button type="submit" class="btn btn-small right waves-effect">
-                    <i class="material-icons left">save</i> Salvar
-                </button>
-                <button type="reset" data-action="back" class="btn btn-small right mr-2 waves-effect">
-                    <i class="material-icons left">arrow_back</i> Cancelar
-                </button>
+			<div class="col s12 mb-1 mt-3">
 
-                <input type="hidden" name="acao" value="login">
-                <input type="hidden" name="id" value="{{ isset($row) ? $row->id : null }}">
-                <input type="hidden" name="_method" value="{{ isset($row) ? 'put' : 'post' }}">
+				<button type="submit" class="btn btn-small right waves-effect">
+					<i class="material-icons left">save</i> Salvar
+				</button>
+				<button type="reset" data-action="back" class="btn btn-small right mr-2 waves-effect">
+					<i class="material-icons left">arrow_back</i> Cancelar
+				</button>
 
-                <input type="hidden" name="dicionario" value="{{ isset($row) ? $row->id_dicionario : null }}">
+				<input type="hidden" name="acao" value="login">
+				<input type="hidden" name="id" value="{{ isset($row) ? $row->id : null }}">
+				<input type="hidden" name="_method" value="{{ isset($row) ? 'put' : 'post' }}">
 
-                @if (session()->get('userdata')['id_grupo'] > 1)
+				<input type="hidden" name="dicionario" value="{{ isset($row) ? $row->id_dicionario : null }}">
 
-                    <input type="hidden" name="editavel" value="{{ $editavel }}">
+				@if (session()->get('userdata')['id_grupo'] > 1)
 
-                    @if (!is_null($input_label_hidden))
-                        <input type="hidden" name="label" value="{{ $input_label_hidden }}">
-                    @endif
+					<input type="hidden" name="editavel" value="{{ $editavel }}">
 
-                @endif
+					@if (!is_null($input_label_hidden))
+						<input type="hidden" name="label" value="{{ $input_label_hidden }}">
+					@endif
 
-            </div>
+				@endif
 
-        </div>
+			</div>
 
-    </form>
+		</div>
+
+	</form>
 
 @endsection

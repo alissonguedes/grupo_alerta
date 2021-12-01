@@ -36,10 +36,10 @@ namespace App\Models\Main {
                 ->where('P.status', '1');
 
             if (!is_null($subpage)) {
-                $get->where('M.link', $menu);
+                $get->where('M.slug', $menu);
                 $get->where('P.slug', $subpage);
             } else {
-                $get->where('M.link', $menu);
+                $get->where('M.slug', $menu);
             }
 
             if (!is_null($this->limit)) {
@@ -65,7 +65,7 @@ namespace App\Models\Main {
         public function getSubPages($id_menu = null, $page = null, $idioma = null)
         {
 
-            $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
+            $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'M.slug', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
                 ->from('tb_pagina AS P')
                 ->join('tb_acl_menu AS M', 'M.id', '=', 'P.id_menu')
                 ->where('P.status', '1');
@@ -144,7 +144,7 @@ namespace App\Models\Main {
         public function getMenus()
         {
 
-            return $this->select('id', 'id_parent', 'label', 'link')
+            return $this->select('id', 'id_parent', 'label', 'link', 'slug')
                 ->from('tb_acl_menu')
                 ->where('id_secao', '2')
                 ->where('status', '1')
