@@ -94,7 +94,7 @@ $input_label_hidden = null;
 		<div class="row mt-2">
 
 			<div class="col s12 mb-1">
-				<label for="status">Abrir em nova aba</label>
+				<label for="target">Abrir em nova aba</label>
 				<div class="switch right">
 					<label class=" no-margin">
 						{? $checked = !isset($row) || (isset($row) && $row->target === '_blank') ? 'checked="checked"' : null; ?}
