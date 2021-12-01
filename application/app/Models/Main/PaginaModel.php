@@ -144,7 +144,7 @@ namespace App\Models\Main {
         public function getMenus()
         {
 
-            return $this->select('id', 'id_parent', 'label', 'link', 'slug')
+            return $this->select('id', 'id_parent', 'label', 'link', 'slug', 'target')
                 ->from('tb_acl_menu')
                 ->where('id_secao', '2')
                 ->where('status', '1')

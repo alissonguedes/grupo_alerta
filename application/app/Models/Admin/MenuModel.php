@@ -99,6 +99,7 @@ class MenuModel extends Authenticatable
 		$label		= $request -> label;
 		$slug		= limpa_string($request -> label);
 		$link		= $request -> link;
+		$target 	= isset($request->target) ? $request->target : null;
 		$status		= isset($request -> status) ? $request -> status : '0';
 		$editavel	= isset($request -> editavel) ? $request -> editavel : ( Session::get('userdata')['id_grupo'] === '1' ? '0' : '1' );
 
@@ -118,6 +119,7 @@ class MenuModel extends Authenticatable
 			'id_palavra' => 0,
 			'id_secao' => 2,
 			'link' => $link,
+			'target' => $target,
 			'status' => $status,
 			'editavel' => $editavel
 		];
@@ -136,6 +138,7 @@ class MenuModel extends Authenticatable
 			$label		= Session::get('userdata')['id_grupo'] === 1 || ( Session::get('userdata')['id_grupo'] > 1 && $get -> editavel === '1' ) ? $request -> label : null;
 			$slug		= limpa_string($request -> label);
 			$link		= $request -> link;
+			$target		= isset($request -> target) ? $request -> target : null;
 			$status		= isset($request -> status) ? $request -> status : '0';
 			$editavel	= isset($request -> editavel) ? $request -> editavel : '0';
 
@@ -155,6 +158,7 @@ class MenuModel extends Authenticatable
 			$data['id_palavra'] = 0;
 			$data['id_secao'] 	= 2;
 			$data['link'] 		= $link;
+			$data['target']		= $target;
 			$data['status'] 	= $status;
 			$data['editavel'] 	= $editavel;
 

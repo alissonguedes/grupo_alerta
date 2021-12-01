@@ -74,10 +74,11 @@ $empresa = $empresa
                                     $submenus = $m_menus->getSubPages($menu->id);
 
 									$link = !is_null($menu->link) ? $menu->link : ($submenus->count() == 0 ? $menu->slug : '#');
+									$target = !is_null($menu->target) ? 'target="' . $menu->target . '"' : null;
                                     $class_has_children = $submenus->count() > 0 ? 'menu-item-has-children' : null;
 
                                     echo '<li class="menu-item menu-item-type-custom menu-item-object-custom ' . $class_has_children . '">';
-                                    echo '  <a href="' . url($link) . '">' . $menu->label . '</a>';
+                                    echo '  <a href="' . url($link) . '" ' . $target . '>' . $menu->label . '</a>';
                                     if (is_null($menu->link) && $submenus->count() > 0):
                                         echo '<ul class="sub-menu">';
                                         foreach ($submenus as $sub):
