@@ -7,8 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Session;
 
-class PaginaModel extends Authenticatable
-{
+class PaginaModel extends Authenticatable {
 
     use HasFactory, Notifiable;
 
@@ -50,8 +49,7 @@ class PaginaModel extends Authenticatable
         'status',
     ];
 
-    public function getPagina($find = null)
-    {
+    public function getPagina($find = null) {
 
         $get = $this->select('*');
 
@@ -85,45 +83,102 @@ class PaginaModel extends Authenticatable
 
     }
 
-	public function getSections($id) {
+    public function getSections($id) {
 
-		$get = $this -> select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
-		$get -> from('tb_pagina_sections');
-		$get -> where('id_pagina', $id);
-		$get -> orderBy('ordem', 'ASC');
-		return $get -> get();
+        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
+        $get->from('tb_pagina_sections');
+        $get->where('id_pagina', $id);
+        $get->where('id_parent', '0');
+        $get->orderBy('ordem', 'ASC');
+        return $get->get();
 
-	}
+    }
 
-    public function create($request)
-    {
+    public function getSubSections($id) {
+        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
+        $get->from('tb_pagina_sections');
+        $get->where('id_parent', $id);
+        // $get -> orderBy('ordem', 'ASC');
+        return $get->get();
+    }
 
-		$section = [];
+    public function getAttach($id) {
 
-	    $path = 'assets/embaixada/documentos/';
+        return $this->select('*')
+            ->from('tb_attachment')
+            ->where('id_modulo', $id)
+            ->where('modulo', 'page')
+            ->orderBy('realname')
+            ->get();
+
+    }
+
+    public function getGrupo($id = null) {
+        $pag = $this->select('id', 'id_pagina', 'titulo')
+            ->from('tb_pagina');
+
+        if (!is_null($id)) {
+            $pag->where('id', '<>', $id);
+        }
+
+        return $pag->get();
+    }
+
+    public function create($request) {
+
+        $section = [];
+
+        $path     = 'assets/embaixada/documentos/';
         $origName = null;
         $fileName = null;
-        $arquivo = null;
+        $arquivo  = null;
 
         $traducao = [];
-        $data = [
+        $data     = [
             'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
-            'id_menu' => $request->menu,
-            'titulo' => $request->titulo,
-            'slug' => limpa_string($request->titulo),
+            'id_menu'   => $request->menu,
+            'titulo'    => $request->titulo,
+            'slug'      => limpa_string($request->titulo),
             'subtitulo' => $request->subtitulo,
             'descricao' => $request->descricao,
-            'texto' => $request->texto,
-            'idioma' => get_config('language'),
-            'status' => isset($request->status) ? $request->status : '0',
+            'texto'     => $request->texto,
+            'idioma'    => get_config('language'),
+            'status'    => isset($request->status) ? $request->status : '0',
         ];
 
-        foreach ($_POST as $ind => $val) {
+        if ($request->file('arquivo')) {
 
-            $lang = explode(':', $ind);
-            if (count($lang) == 2) {
-                $traducao[$lang[1]][$lang[0]] = $val;
+            $file = $request->file('arquivo');
+
+            foreach ($file as $f) {
+
+                $fileName = $f->getClientOriginalName();
+                $fileExt  = $f->getClientOriginalExtension();
+                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+
+                $imgName = explode('.', ($f->getClientOriginalName()));
+
+                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                $arquivo  = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+
+                $f->storeAs($path, $arquivo);
+
+                $files[] = [
+                    'id_modulo' => $id,
+                    'modulo'    => 'page',
+                    'path'      => $path . $arquivo,
+                    'realname'  => $origName,
+                    'author'    => Session::get('userdata')['nome'],
+                    'titulo'    => null,
+                    'descricao' => null,
+                    'clicks'    => 0,
+                    'url'       => null,
+                    'size'      => $f->getSize(),
+                ];
+
             }
+
+            $this->from('tb_attachment')->insert($files);
 
         }
 
@@ -131,81 +186,81 @@ class PaginaModel extends Authenticatable
             $data['arquivo'] = $path . $arquivo;
         }
 
-        // $data['titulo'] = json_encode($traducao['titulo']);
-        // $data['subtitulo'] = json_encode($traducao['subtitulo']);
-        // $data['texto'] = json_encode($traducao['texto']);
+        if ($id_pagina = $this->insertGetId($data)) {
 
-        if ($id = $this->insertGetId($data)) {
+            if ($request->section) {
 
-			if ( $request->section ) {
+                $ordem        = 0;
+                $data_section = [];
 
-				$id_pagina = $id;
+                foreach ($request->section as $section) {
 
-				for ( $i = 0; $i < count($request->section); $i++) {
+                    $data_subsection = [];
 
-					$section[$i]['id_pagina']	= $id_pagina;
-					$section[$i]['titulo']		= $request->section_title[$i];
-					$section[$i]['slug']		= limpa_string($section[$i]['titulo']);
-					$section[$i]['subtitulo']	= $request->section_subtitle[$i];
-					$section[$i]['texto']		= $request->section_text[$i];
+                    $data_section['id_pagina'] = $id_pagina;
+                    $data_section['titulo']    = $section['title'];
+                    $data_section['slug']      = limpa_string($section['title']);
+                    $data_section['subtitulo'] = $section['subtitle'];
+                    $data_section['texto']     = $section['text'];
+                    $data_section['ordem']     = ++$ordem;
 
-				}
+                    $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 
-				foreach ( $section as $s ) {
+                    if (isset($section['subsection'])) {
 
-					$issetSection = $this -> select('id', 'id_pagina', 'titulo', 'slug') -> from('tb_pagina_sections')
-						-> where('id_pagina', $id_pagina)
-						// -> where('titulo', $s['titulo'])
-						// -> where('slug', $s['slug'])
-						-> get()
-						-> first();
+                        foreach ($section['subsection'] as $ind => $subsection) {
 
-					if ( isset($issetSection) ) {
-						$this->from('tb_pagina_sections')
-							 ->where('id', $issetSection->id)
-							 ->where('id_pagina', $id_pagina)
-							 ->update($s);
-					} else {
-						$this->from('tb_pagina_sections')->insert($s);
-					}
+                            $data_subsection['id_pagina'] = $id_pagina;
+                            $data_subsection['id_parent'] = $id_section;
+                            $data_subsection['titulo']    = $subsection['title'];
+                            $data_subsection['slug']      = limpa_string($subsection['title']);
+                            $data_subsection['subtitulo'] = $subsection['subtitle'];
+                            $data_subsection['texto']     = $subsection['text'];
+                            $data_subsection['link']      = $subsection['link'];
+                            $data_subsection['imagem']    = $subsection['imagem'];
+                            $data_subsection['icone']     = $subsection['icone'];
 
-				}
+                            if (is_object($subsection['imagem'])) {
 
-			}
+                                $file = $subsection['imagem'];
 
-            if ($request->file('arquivo')) {
+                                $fileName = $file->getClientOriginalName();
+                                $fileExt  = $file->getClientOriginalExtension();
+                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                                $imgName  = explode('.', $fileName);
+                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                $file = $request->file('arquivo');
+                                $file->storeAs($path, $imagem);
 
-                foreach ($file as $f) {
+                                $data_subsection['imagem'] = $path . $imagem;
 
-                    $fileName = $f->getClientOriginalName();
-                    $fileExt = $f->getClientOriginalExtension();
-                    $fileExt = $fileExt != '' ? '.' . $fileExt : '.txt';
+                            }
 
-                    $imgName = explode('.', ($f->getClientOriginalName()));
+                            if (is_object($subsection['icone'])) {
 
-                    $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                    $arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+                                $file = $subsection['icone'];
 
-                    $f->storeAs($path, $arquivo);
+                                $fileName = $file->getClientOriginalName();
+                                $fileExt  = $file->getClientOriginalExtension();
+                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                                $imgName  = explode('.', $fileName);
+                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                    $files[] = [
-                        'id_modulo' => $id,
-                        'modulo' => 'page',
-                        'path' => $path . $arquivo,
-                        'realname' => $origName,
-                        'author' => Session::get('userdata')['nome'],
-                        'titulo' => null,
-                        'descricao' => null,
-                        'clicks' => 0,
-                        'url' => null,
-                        'size' => $f->getSize(),
-                    ];
+                                $file->storeAs($path, $imagem);
+
+                                $data_subsection['icone'] = $path . $imagem;
+
+                            }
+
+                            $this->from('tb_pagina_sections')->insertGetId($data_subsection);
+
+                        }
+
+                    }
 
                 }
-
-                $this->from('tb_attachment')->insert($files);
 
             }
 
@@ -217,178 +272,97 @@ class PaginaModel extends Authenticatable
 
     }
 
-    public function getAttach($id)
-    {
+    public function edit($request, $field = null) {
 
-        return $this->select('*')
-            ->from('tb_attachment')
-            ->where('id_modulo', $id)
-            ->where('modulo', 'page')
-            ->orderBy('realname')
-            ->get();
-
-    }
-
-    public function getGrupo($id = null)
-    {
-        $pag = $this->select('id', 'id_pagina', 'titulo')
-            ->from('tb_pagina');
-
-        if (!is_null($id)) {
-            $pag->where('id', '<>', $id);
-        }
-
-        return $pag->get();
-    }
-
-    public function edit($request, $field = null)
-    {
-
-        $files = [];
-        $path = 'assets/embaixada/documentos/';
-        $origName = null;
-        $fileName = null;
-        $arquivo = null;
+        $files     = [];
+        $path      = 'assets/grupoalertaweb/uploads/' . date('Y') . '/' . date('m') . '/paginas/';
+        $origName  = null;
+        $fileName  = null;
+        $arquivo   = null;
+        $id_pagina = $request->id;
 
         if (is_null($field)) {
 
-            if ($request->file('arquivo')) {
+            // Primeiro remove todos os registros referente à mesma página para adicioná-los poteriormente
+            $this->from('tb_pagina_sections')->where('id_pagina', $id_pagina)->delete();
 
-                $file = $request->file('arquivo');
+            if ($request->section) {
 
-                foreach ($file as $f) {
+                $ordem        = 0;
+                $data_section = [];
 
-                    $fileName = $f->getClientOriginalName();
-                    $fileExt = $f->getClientOriginalExtension();
-                    $fileExt = $fileExt != '' ? '.' . $fileExt : '.txt';
+                foreach ($request->section as $section) {
 
-                    $imgName = explode('.', ($f->getClientOriginalName()));
+                    $data_subsection = [];
 
-                    $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                    $arquivo = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+                    $data_section['id_pagina'] = $id_pagina;
+                    $data_section['titulo']    = $section['title'];
+                    $data_section['slug']      = limpa_string($section['title']);
+                    $data_section['subtitulo'] = $section['subtitle'];
+                    $data_section['texto']     = $section['text'];
+                    $data_section['ordem']     = ++$ordem;
 
-                    $f->storeAs($path, $arquivo);
+                    $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 
-                    $files[] = [
-                        'id_modulo' => $request->id,
-                        'modulo' => 'page',
-                        'path' => $path . $arquivo,
-                        'realname' => $origName,
-                        'author' => Session::get('userdata')['nome'],
-                        'titulo' => null,
-                        'descricao' => null,
-                        'clicks' => 0,
-                        'url' => null,
-                        'size' => $f->getSize(),
-                    ];
+                    if (isset($section['subsection'])) {
 
-                }
+                        foreach ($section['subsection'] as $ind => $subsection) {
 
-                $this->from('tb_attachment')->insert($files);
+                            $data_subsection['id_pagina'] = $id_pagina;
+                            $data_subsection['id_parent'] = $id_section;
+                            $data_subsection['titulo']    = $subsection['title'];
+                            $data_subsection['slug']      = limpa_string($subsection['title']);
+                            $data_subsection['subtitulo'] = $subsection['subtitle'];
+                            $data_subsection['texto']     = $subsection['text'];
+                            $data_subsection['link']      = $subsection['link'];
+                            $data_subsection['imagem']    = $subsection['imagem'];
+                            $data_subsection['icone']     = $subsection['icone'];
 
-            }
+                            if (is_object($subsection['imagem'])) {
 
-            if (isset($request->album)) {
+                                $file = $subsection['imagem'];
 
-                foreach ($request->album as $album) {
+                                $fileName = $file->getClientOriginalName();
+                                $fileExt  = $file->getClientOriginalExtension();
+                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                                $imgName  = explode('.', $fileName);
+                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                    $issetAlbum = $this->from('tb_pagina_album')
-									   ->select('id')
-									   ->where('id_album', $album)
-									   ->where('id_pagina', $request->id)
-									   ->get()
-									   ->first();
+                                $file->storeAs($path, $imagem);
 
-                    if (!isset($issetAlbum)) {
-                        $this->from('tb_pagina_album')->insert(['id_pagina' => $request->id, 'id_album' => $album]);
+                                $data_subsection['imagem'] = $path . $imagem;
+
+                            }
+
+                            if (is_object($subsection['icone'])) {
+
+                                $file = $subsection['icone'];
+
+                                $fileName = $file->getClientOriginalName();
+                                $fileExt  = $file->getClientOriginalExtension();
+                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                                $imgName  = explode('.', $fileName);
+                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
+
+                                $file->storeAs($path, $imagem);
+
+                                $data_subsection['icone'] = $path . $imagem;
+
+                            }
+
+                            $this->from('tb_pagina_sections')->insertGetId($data_subsection);
+
+                        }
+
                     }
 
                 }
 
-                $this->from('tb_pagina_album')->whereNotIn('id_album', $request->album)->where('id_pagina', $request->id)->delete();
-
             }
 
-            $traducao = [];
-            $data = [
-                'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
-                'id_menu' => $request->menu,
-                'titulo' => $request->titulo,
-                'slug' => limpa_string($request->titulo),
-                'subtitulo' => null,
-                'descricao' => $request->descricao,
-                'tipo' => $request->tipo_pagina ?? 'post',
-                'texto' => $request->texto,
-                'idioma' => get_config('language'),
-                'status' => isset($request->status) ? $request->status : '0',
-            ];
-
-            foreach ($_POST as $ind => $val) {
-                $lang = explode(':', $ind);
-                if (count($lang) == 2) {
-                    $traducao[$lang[1]][$lang[0]] = $val;
-                }
-            }
-
-			// Atualizar seções da página
-			if ( $request->section ) {
-
-				$id_pagina = $request->id;
-
-				for ( $i = 0; $i < count($request->section); $i++) {
-
-					$section[$i]['id_section']	= $request->section[$i];
-					$section[$i]['id_pagina']	= $id_pagina;
-					$section[$i]['titulo']		= $request->section_title[$i];
-					$section[$i]['slug']		= limpa_string($section[$i]['titulo']);
-					$section[$i]['subtitulo']	= $request->section_subtitle[$i];
-					$section[$i]['texto']		= $request->section_text[$i];
-					$section[$i]['ordem']		= $i + 1;
-
-				}
-
-				foreach ( $section as $s ) {
-
-					$data_section = [
-						'id_pagina' => $id_pagina,
-						'titulo'	=> $s['titulo'],
-						'slug'		=> $s['slug'],
-						'subtitulo'	=> $s['subtitulo'],
-						'texto'		=> $s['texto'],
-						'ordem'		=> $s['ordem']
-					];
-
-					if ( is_null($s['id_section']) ) {
-
-						$this->from('tb_pagina_sections')->insert($data_section);
-
-					} else {
-
-						$issetSection = $this -> select('id', 'id_pagina', 'titulo', 'slug')
-							-> from('tb_pagina_sections')
-							-> where('id', $s['id_section'])
-							-> where('id_pagina', $id_pagina)
-							-> get()
-							-> first();
-
-						if ( isset($issetSection) ) {
-							$this->from('tb_pagina_sections')
-								->where('id', $s['id_section'])
-								->where('id_pagina', $id_pagina)
-								->update($data_section);
-						}
-
-					}
-
-				}
-
-			}
-
-            // $data['titulo'] = json_encode($traducao['titulo']);
-            // $data['subtitulo'] = json_encode($traducao['subtitulo']);
-            // $data['texto'] = json_encode($traducao['texto']);
-
-            return $this->where('id', $request->id)->update($data);
+            return true;
 
         } else {
 
@@ -400,10 +374,9 @@ class PaginaModel extends Authenticatable
 
     }
 
-    public function update_menu($menu)
-    {
+    public function update_menu($menu) {
 
-        $arr_id = [];
+        $arr_id  = [];
         $id_menu = $_POST['idMenu'];
 
         for ($i = 0; $i < count($menu); $i++) {
@@ -428,16 +401,14 @@ class PaginaModel extends Authenticatable
 
     }
 
-    public function remove($request)
-    {
+    public function remove($request) {
 
         $this->remove_file($request->id);
         return $this->whereIn('id', $request->id)->delete();
 
     }
 
-    public function remove_file($id)
-    {
+    public function remove_file($id) {
 
         if (is_array($id)) {
             $column = 'id_modulo';
@@ -455,7 +426,7 @@ class PaginaModel extends Authenticatable
             foreach ($files as $file) {
 
                 $file = public_path($file->path);
-                $un = file_exists($file) ? unlink($file) : true;
+                $un   = file_exists($file) ? unlink($file) : true;
 
                 if ($un) {
                     return $this->from('tb_attachment')->where($column, $id)->delete();
@@ -471,8 +442,7 @@ class PaginaModel extends Authenticatable
 
     }
 
-    public function debug($get)
-    {
+    public function debug($get) {
         echo '==> ';
         echo '<br>';
         $query = str_replace(array('?'), array('\'%s\''), $get->toSql());
@@ -496,8 +466,7 @@ class PaginaModel extends Authenticatable
     //     return $get->get();
     // }
 
-    public function getSubPages($id_menu, $page = null, $idioma = null)
-    {
+    public function getSubPages($id_menu, $page = null, $idioma = null) {
 
         $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao', 'P.slug')
             ->from('tb_pagina AS P')

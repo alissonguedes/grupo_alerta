@@ -541,21 +541,22 @@ var Form = {
 
 			Object.keys($field).forEach((item) => {
 
+				var name = '';
+				var field = $field[item];
 				var item = item.split('.').length > 1 ? item.split('.') : item;
 
 				if (typeof item === 'object') {
-					var name = item[0];
-					var item = item[1];
-					var label = $('[name="' + name + '[]"]')[item];
-					var field = $field[name + '.' + item];
+					for (var i in item) {
+						if (i > 0)
+							name += '[' + item[i] + ']';
+						else
+							name += item[i];
+					}
 				} else {
-					var name = item;
-					var item = item;
-					var label = $('[name="' + name + '"]');
-					var field = $field[item];
+					name = item;
 				}
 
-				console.log(field);
+				var label = $('[name="' + name + '"]');
 
 				var div = $('<div/>', {
 					'class': 'error'

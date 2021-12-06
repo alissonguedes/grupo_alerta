@@ -1,5 +1,3 @@
-// const { find } = require("core-js/core/array");
-
 function preview_map() {
 
 	var reg = /[\<]iframe((\s+[\S+]+)+)?[\>](\S.+)?[\<][\/]iframe[\>]/i;
@@ -54,40 +52,209 @@ function preview_map() {
 
 }
 
-function toggle(id) {
+/**
+ * Manipulação de seções na página do admin "Páginas > Seções"
+ */
+function toggle(section) {
 
-	var id = typeof id !== 'undefined' ? id : '.card';
+	var section = typeof section !== 'undefined' ? $(section) : $('.card:not(.sub-section)');
 
-	$(id).find('.toggle[data-toggle]').each(function() {
+	$(section).find('.toggle[data-toggle]').each(function() {
 
 		$(this).on('click', function(e) {
 
-			console.log(id);
+			e.preventDefault();
 
 			var content = $(this).parents('.card-content');
 			var toggle = $(this).data('toggle');
 			var toggle = content.find('.' + toggle).toggle();
 
-			if (toggle.is(':visible'))
+			if (toggle.is(':visible')) {
 				$(this).find('i').text('keyboard_arrow_up')
-			else
+			} else {
 				$(this).find('i').text('keyboard_arrow_down')
+			}
 
 		});
 
-	});
+		$(this).click();
 
-	$(id).find('.toggle').click();
+	});
 
 	$('#section').sortable({
 		revert: true
 	});
 
-	$(id).draggable({
+	$(section).draggable({
 		'connectToSortable': '#section',
+		'start': function() {
+			$(this).find('.full--editor').each(function() {
+				tinyMCE.execCommand('mceRemoveEditor', true, $(this).attr('id'));
+			});
+		},
 		'stop': function() {
 			$('.card').removeAttr('style');
+			$(this).find('.full--editor').each(function() {
+				console.log($(this).attr('id'))
+				tinyMCE.execCommand('mceAddEditor', true, $(this).attr('id'));
+			});
+		},
+	});
+
+	delete_section(section);
+	add_subsection(section);
+	editor($(section).find('.full--editor'));
+
+}
+
+/**
+ * Manipulação de seções na página do admin "Páginas > Seções"
+ */
+function delete_section(section) {
+
+	$(section).find('[data-delete]').on('click', function(e) {
+
+		e.preventDefault();
+
+		var id = $(this).parents('#paginas').find('#sections').find('#section').find('.card:not(.sub-section)').length + 1;
+		var _index = $(this).data('delete');
+		var _parent = '';
+
+		for (var i = 0; i < _index; i++) {
+			_parent += '.parent()';
 		}
+
+		if (_parent != '') {
+
+			eval('$(this)' + _parent + '.remove()');
+			$(this).parents('#sub-section').each(function() {
+				console.log($(this));
+				$(this).find('.card-title').find('h4').text('Caixa de apresentação ' + (id - 1))
+			});
+		}
+
+		$('.material-tooltip').css({
+			'opacity': '0'
+		});
+
+	});
+
+}
+
+/**
+ * Manipulação de seções na página do admin "Páginas > Seções"
+ */
+function add_subsection(section) {
+
+	var section = typeof section !== 'undefined' ? $(section) : $('.card:not(.sub-section)');
+
+	$(section).find('.card.card-add').on('click', function(e) {
+
+		e.preventDefault();
+
+		var id = $(this).parents('.card').attr('id').split('_')[1];
+		var len = $(this).closest('.sub-sections').find('.sub-section').find('.card.sub-section').length;
+
+		var sub_section = '<div class="col s4"> \
+				<div class="card sub-section"> \
+					<div class="card-content"> \
+						<div class="card-title"> \
+							<h4 class="left">Caixa de apresentação ' + (len + 1) + '</h4> \
+							<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="4" data-tooltip="Remover Caixa"> \
+								<i class="material-icons red-text">delete</i> \
+							</a> \
+						</div> \
+						<div class="card-body"> \
+							<!-- BEGIN título --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="input-field"> \
+										<label for="section_title">Título da caixa</label> \
+										<input type="text" name="section[' + id + '][subsection][' + len + '][title]"> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END título --> \
+							<!-- BEGIN subtítulo --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="input-field"> \
+										<label>Subtítulo da caixa</label> \
+										<input type="text" name="section[' + id + '][subsection][' + len + '][subtitle]"> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END subtítulo --> \
+							<!-- BEGIN link --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="input-field"> \
+										<label>Link</label> \
+										<input type="text" name="section[' + id + '][subsection][' + len + '][link]"> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END link --> \
+							<!-- BEGIN imagem de capa --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="file-field input-field"> \
+										<div class="btn"> \
+											<div class="file"> \
+												<i class="material-icons">attach_file</i> \
+											</div> \
+											<input type="file" name="section[' + id + '][subsection][' + len + '][imagem]"> \
+										</div> \
+										<div class="file-path-wrapper"> \
+											<input type="text" class="file-path validate" placeholder="Imagem da caixa"> \
+										</div> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END imagem de capa --> \
+							<!-- BEGIN ícone --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="file-field input-field"> \
+										<div class="btn"> \
+											<div class="file"> \
+												<i class="material-icons">attach_file</i> \
+											</div> \
+											<input type="file" name="section[' + id + '][subsection][' + len + '][icone]"> \
+											<input type="hidden" name="section[' + id + '][subsection][' + len + '][icone]"> \
+										</div> \
+										<div class="file-path-wrapper"> \
+											<input type="text" class="file-path validate" placeholder="Ícone da caixa"> \
+										</div> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END ícone --> \
+							<!-- BEGIN Texto --> \
+							<div class="row"> \
+								<div class="col s12 mb-1"> \
+									<div class="input-field"> \
+										<label class="active">Texto da caixa</label> \
+										<textarea name="section[' + id + '][subsection][' + len + '][text]" class="editor full--editor" data-height="300"></textarea> \
+									</div> \
+								</div> \
+							</div> \
+							<!-- END Texto --> \
+						</div> \
+					</div> \
+				</div> \
+			</div> ';
+
+		$(this).closest('.sub-sections').find('section.sub-section').append(sub_section);
+
+		$('input[name="subsection[]"]').each(function(e) {
+			$(this).val(e);
+		});
+
+		delete_section('.card.sub-section');
+		editor($(sub_section).find('.full--editor'));
+
+
 	});
 
 }
@@ -135,36 +302,12 @@ function animate(component, animation, callback) {
 
 function editor(element) {
 
-	// // Editor sem barra de ferramentas
-	// $('.editor--hide_toolbar').each(function(e){
-
-	//     tinymce.init({
-	//         selector: '.' + $(this).attr('class').replace(/\s/g, '.'),
-	//         height: typeof $(this).data('height') !== 'undefined' ? $(this).data('height') : 250,
-	//         plugins: [],
-	//         toolbar: false,
-	//         menubar: false,
-	//         inline: false,
-	//         placeholder: typeof $(this).attr('placeholder') !== 'undefined' ? $(this).attr('placeholder') : null,
-	//         content_css: typeof $(this).data('style') !== 'undefined' ? $(this).data('style') : BASE_PATH + 'styles/style.css',
-	//     });
-
-	// });
-
-	// // // Editor básico
-	// $('.basic--editor').each(function() {
-
-	// 	var editor = new Quill(this, {
-	// 		placeholder: typeof $(this).attr('placeholder') !== 'undefined' ? $(this).attr('placeholder') : null,
-	// 		theme: 'snow'
-	// 	});
-
-	// });
-
 	var $element = typeof element === 'undefined' ? $('body').find('.full--editor') : element;
+
 	// Editor completo
-	$element.each(function() {
-		tinymce.init({
+	$element.each(function(e) {
+
+		var tiny = tinymce.init({
 			selector: '.' + $(this).attr('class').replace(/\s/g, '.'),
 			relative_urls: false,
 			remove_script_host: false,
@@ -239,7 +382,13 @@ function editor(element) {
 			menubar: 'favs file edit view insert format tools table help',
 			// content_css: typeof $(this).data('style') !== 'undefined' ? $(this).data('style') : BASE_PATH + 'styles/style.css',
 			placeholder: typeof $(this).attr('placeholder') !== 'undefined' ? $(this).attr('placeholder') : null
+
 		});
+
+		setTimeout(function() {
+			$('.tox-selectfield').find('select').formSelect();
+		}, 300)
+
 	});
 
 }

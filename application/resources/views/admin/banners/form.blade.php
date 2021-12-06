@@ -89,7 +89,6 @@ $input_label_hidden = null;
             </div>
             <!-- END imagem de capa -->
 
-
             <!-- BEGIN Status -->
             <div class="row mb-3">
 

@@ -57,6 +57,11 @@ small {
 	color: #fff;
 }
 
+.tox-tinymce {
+	border: 0 !important;
+	top: 15px;
+}
+
 .spinner-green,
 .spinner-green-only {
 	border-color: var(--amber);
@@ -154,7 +159,10 @@ textarea.materialize-textarea:focus:not([readonly]),
 .select-wrapper:not(.browser-default) input.select-dropdown:focus,
 .select-wrapper:not(.browser-default) input.select-dropdown:focus.ql-container:not([readonly]),
 .chips.focus:not([readonly]),
-.input-field:not(.browser-default) .ql-container:not([readonly]) {
+.input-field:not(.browser-default) .ql-container:not([readonly]),
+.tox .tox-textarea:focus,
+.tox .tox-textfield:focus,
+.tox .tox-toolbar-textfield:focus {
 	background-size: 100% 2px, 100% 0px;
 	background-image: linear-gradient(var(--amber), var(--amber)), linear-gradient(#d9d9d9, #d9d9d9) !important;
 }
@@ -235,9 +243,11 @@ h6 {
 	overflow: hidden;
 }
 
-.card .card-content .card-title {
+.card .card-content .card-title h4 {
 	color: #fff;
 	font-size: 24px;
+	margin: 0 !important;
+	line-height: inherit;
 }
 
 .card .card-content .card-title small {

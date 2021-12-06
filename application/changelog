@@ -7,3 +7,6 @@ VERSION=2.0
         modified:   application/resources/views/admin/menus/form.blade.php
         modified:   application/resources/views/main/layouts/menu.blade.php
         modified:   application/routes/web.php
+
+ALTER TABLE `tb_pagina_sections` ADD `link` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`;
+ALTER TABLE `tb_pagina_sections` ADD `icone` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`

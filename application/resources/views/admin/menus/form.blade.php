@@ -49,7 +49,7 @@ $input_label_hidden = null;
 			<div class="col s12 mb-1">
 				<div class="input-field mb-2">
 					<label class="">Rótulo</label>
-					<input type="text" {{ !$disabled ? 'name=label' : null }} id="label" class="box_input" value="{{ isset($row) ? $row->label : null }}" {{ $disabled }} autofocus="autofocus">
+					<input type="text" {{ !$disabled ? 'name=label' : null }} id="label" class="box_input" value="{{ isset($row) ? $row->label : null }}" autofocus="autofocus">
 				</div>
 			</div>
 		</div>
@@ -84,7 +84,7 @@ $input_label_hidden = null;
 			<div class="col s12 mb-1">
 				<div class="input-field">
 					<label>Link</label>
-					<input type="url" name="link" id="link" value="{{ isset($row) ? $row->link : null }}">
+					<input type="url" name="link" id="link" value="{{ isset($row) ? $row->link : null }}" {{ $disabled }}>
 				</div>
 			</div>
 		</div>

@@ -256,111 +256,115 @@ function core() {
 		init();
 	});
 
-	// console.log(BASE_URL);
-
 	requirejs([BASE_URL + "/../../assets/scripts/banner.js"], () => {
-
 		Banner.init();
-
 	});
 
+	/**
+	 * Manipulação de seções na página do admin "Páginas > Seções"
+	 */
 	toggle();
-	$('#paginas').find('input[name="section_title[]"]').on('keyup', function() {
-		$(this).parents('.card-content').find('.card-title').find('span').text(
-			$(this).val() != '' ? $(this).val() : 'Sem título'
-		);
+
+	$('#paginas').find('#sections').find('#section > .card').each(function(index) {
+
+		$(this).find('input[name="section[' + index + '][title]"]').on('keyup', function() {
+			$(this).parents('.card-content').find('.card-title').find('span').text(
+				$(this).val() != '' ? $(this).val() : 'Sem título'
+			);
+		});
+
 	});
 
-	$('#paginas').find('.add-section').on('click', function() {
+	$('#paginas').find('.add-section').on('click', function(e) {
 
-		var id = $(this).parents('#paginas').find('#sections').find('#section').find('.card').length + 1;
+		e.preventDefault();
+
+		var id = $(this).parents('#paginas').find('#sections').find('#section > .card').length;
 		var id_section = 'section_' + id;
 
-		var section = '<!-- card --> \
-                        <div id="' + id_section + '" class="card"> \
-                            <!-- card-content --> \
-                            <div class="card-content"> \
-                                <div class="row"> \
-                                    <div class="col s12"> \
-                                        <h4 class="card-title">Seção - <span>Sem título</span> \
-                                            <a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light toggle" data-toggle="card-body"> \
-                                                <i class="material-icons grey-text">keyboard_arrow_up</i> \
-                                            </a> \
-                                            <a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light dropdown-trigger" data-target="page-actions"> \
-                                                <i class="material-icons grey-text">more_vert</i> \
-                                            </a> \
-                                        </h4> \
-                                    </div> \
-                                </div> \
-                                <div class="card-body mt-3"> \
-                                    <!-- BEGIN button --> \
-                                    <div class="row"> \
-                                        <div class="col s3"> \
-                                            <ul id="page-actions" class="dropdown-content"> \
-                                                {{-- <li class=""> \
-                                                    <button type="button" class="add-section" value="{{ isset($row) ? $row->id : null }}"> \
-                                                        <i class="material-icons left">add</i> Adicionar seção \
-                                                    </button> \
-                                                </li> --}} \
-                                                <li class=""> \
-                                                    <button type="button" class="del-section" value="{{ isset($row) ? $row->id : null }}"> \
-                                                        <i class="material-icons left">add</i> Remover seção \
-                                                    </button> \
-                                                </li> \
-                                            </ul> \
-                                        </div> \
-                                    </div> \
-                                    <!-- END button --> \
-                                    <!-- section --> \
-                                    <section id=""> \
-                                        <input type="hidden" name="section[]" value=""> \
-                                        <!-- BEGIN título --> \
-                                        <div class="row"> \
-                                            <div class="col s12 mb-1"> \
-                                                <div class="input-field"> \
-                                                    <label for="section_title">Título da seção</label> \
-                                                    <input type="text" name="section_title[]" class="section_title" id="section_title" value=""> \
-                                                </div> \
-                                            </div> \
-                                        </div> \
-                                        <!-- END título --> \
-                                        <!-- BEGIN subtítulo --> \
-                                        <div class="row"> \
-                                            <div class="col s12 mb-1"> \
-                                                <div class="input-field"> \
-                                                    <label>Subtítulo da seção</label> \
-                                                    <input type="text" name="section_subtitle[]" id="section_subtitle" value=""> \
-                                                </div> \
-                                            </div> \
-                                        </div> \
-                                        <!-- END subtítulo --> \
-                                        <!-- BEGIN Texto --> \
-                                        <div class="row"> \
-                                            <div class="col s12 mb-1"> \
-                                                <div class="input-field browser-default"> \
-                                                    <input type="text" name="section_text[]" id="section_text" value="" class="editor full--editor"> \
-                                                </div> \
-                                            </div> \
-                                        </div> \
-                                        <!-- END Texto --> \
-                                    </section> \
-                                    <!-- END section --> \
-                                </div> \
-                            </div> \
-                            <!-- END card-content --> \
-                        </div> \
-                        <!-- END card -->';
+		var section = ' \
+		<!--card --> \
+		<div id="' + id_section + '" class="card"> \
+			<!-- card-content --> \
+			<div class="card-content"> \
+				<div class="card-title"> \
+						<h4 class="left">Seção - <span>Sem título</span> </h4> \
+					<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light toggle" data-toggle="card-body"> \
+						<i class="material-icons grey-text">keyboard_arrow_up</i> \
+					</a> \
+					<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="3" data-tooltip="Remover Seção"> \
+						<i class="material-icons red-text">delete</i> \
+					</a> \
+				</div> \
+				<!-- BEGIN card-body --> \
+				<div class="card-body mt-3"> \
+					<!-- section --> \
+					<section id=""> \
+						<!-- BEGIN título --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="input-field"> \
+									<label>Título da seção</label> \
+									<input type="text" name="section[' + id + '][title]" class="section_title"> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END título --> \
+						<!-- BEGIN subtítulo --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="input-field"> \
+									<label>Subtítulo da seção</label> \
+									<input type="text" name="section[' + id + '][subtitle]"> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END subtítulo --> \
+						<!-- BEGIN Texto --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="input-field"> \
+									<label>Texto da seção</label> \
+									<textarea type="text" name="section[' + id + '][text]" class="editor full--editor"></textarea> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END Texto --> \
+						<!-- BEGIN sub-sections --> \
+						<div class="sub-sections row"> \
+							<section class="sub-section"> \
+							</section> \
+							<div class="col s4"> \
+								<div class="card card-add"> \
+									<div class="card-content no-padding"> \
+										<div class="card-title"></div> \
+										<div class="card-body"> \
+											<button type="button" class="add-card waves-effect"> \
+												<i class="material-icons">add</i> \
+											</button> \
+										</div> \
+									</div> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END sub-sections --> \
+					</section> \
+					<!-- END section --> \
+				</div> \
+				<!-- END card-body --> \
+			</div> \
+			<!-- END card-content --> \
+		</div> \
+		<!-- END card -->';
 
-		$(this).parents('#sections').find('#section').append(section)
-			.find('input[name="section_title[]"]').on('keyup', function() {
-				$(this).parents('.card-content').find('.card-title').find('span').text(
-					$(this).val() != '' ? $(this).val() : 'Sem título'
-				);
-			})
-		editor($(this).parents('#sections').find('.card').find('.full--editor'));
-		toggle('#' + id);
+		$(this).parents('#sections').find('#section').append(section).find('input[name="section[' + id + '][title]"]').on('keyup', function() {
+			$(this).parents('.card-content').find('.card-title').find('span').text(
+				$(this).val() != '' ? $(this).val() : 'Sem título'
+			);
+		})
 
-		console.log(id);
+		toggle('#' + id_section);
+
 	});
 
 	// 	/**
@@ -369,9 +373,7 @@ function core() {
 	// 	$.ajax({
 	// 		'url': 'api/updates',
 	// 		'success': (response) => {
-	//
 	// 			if (response.updates) Form.showMessage('Existem atualizações pendentes');
-	//
 	// 		}
 	// 	});
 

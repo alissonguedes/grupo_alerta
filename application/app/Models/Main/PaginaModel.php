@@ -4,15 +4,14 @@ namespace App\Models\Main {
 
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Support\Facades\DB;
 
-    class PaginaModel extends Model
-    {
+    class PaginaModel extends Model {
 
         protected $table = 'tb_pagina';
         use HasFactory;
 
-        public function getPagina($menu = null, $subpage = null, $idioma = null)
-        {
+        public function getPagina($menu = null, $subpage = null, $idioma = null) {
 
             $get = $this->select(
                 'P.id',
@@ -62,16 +61,16 @@ namespace App\Models\Main {
 
         }
 
-        public function getSubPages($id_menu = null, $page = null, $idioma = null)
-        {
+        public function getSubPages($id_menu = null, $page = null, $idioma = null) {
 
             $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'M.slug', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
                 ->from('tb_pagina AS P')
                 ->join('tb_acl_menu AS M', 'M.id', '=', 'P.id_menu')
                 ->where('P.status', '1');
 
-            if ( !is_null($id_menu))
+            if (!is_null($id_menu)) {
                 $get->where('P.id_menu', $id_menu);
+            }
 
             $page = !is_null($page) ? $page : 0;
 
@@ -87,8 +86,7 @@ namespace App\Models\Main {
 
         }
 
-        public function getPost($post, $id)
-        {
+        public function getPost($post, $id) {
 
             return $this->where('lang', $_COOKIE['idioma'] ?? get_config('language'))
                 ->where('titulo_slug', $post)
@@ -96,8 +94,7 @@ namespace App\Models\Main {
 
         }
 
-        public function getAlbuns($album = null)
-        {
+        public function getAlbuns($album = null) {
 
             $get = $this->select('id', 'nome', 'slug', 'titulo', 'descricao', 'imagem', 'created_at', 'updated_at')
                 ->from('tb_album AS A')
@@ -114,8 +111,7 @@ namespace App\Models\Main {
 
         }
 
-        public function getUltimosAlbuns($limit = 3)
-        {
+        public function getUltimosAlbuns($limit = 3) {
 
             return $this->select('id', 'nome', 'slug', 'titulo', 'descricao', 'imagem', 'created_at', 'updated_at')
                 ->from('tb_album AS A')
@@ -126,8 +122,7 @@ namespace App\Models\Main {
 
         }
 
-        public function getFotos($id_album)
-        {
+        public function getFotos($id_album) {
 
             return $this
                 ->select('F.id', 'F.titulo', 'F.descricao', 'F.path', 'F.author')
@@ -141,8 +136,7 @@ namespace App\Models\Main {
 
         }
 
-        public function getMenus()
-        {
+        public function getMenus() {
 
             return $this->select('id', 'id_parent', 'label', 'link', 'slug', 'target')
                 ->from('tb_acl_menu')
@@ -150,6 +144,39 @@ namespace App\Models\Main {
                 ->where('status', '1')
                 ->get();
 
+        }
+
+        public function getSections($id = null) {
+
+            $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
+            $get->from('tb_pagina_sections');
+
+            if (is_numeric($id)) {
+                $get->where('id_pagina', $id);
+            } else {
+                $get->where('slug', $id);
+            }
+
+            $get->where('id_parent', '0');
+            $get->orderBy('ordem', 'ASC');
+            $get = $get->get();
+
+            if (is_null($id)) {
+                return $get;
+            }
+
+            return $get->first();
+
+        }
+
+        public function getSubSections($id) {
+
+            $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
+            $get->from('tb_pagina_sections', 'P');
+            $get->where('id_parent', $id);
+            $get->where('id_pagina', DB::raw('(SELECT id FROM tb_pagina WHERE id = P.id_pagina)'));
+
+            return $get->get();
         }
 
     }
