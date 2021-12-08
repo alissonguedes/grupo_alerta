@@ -8,6 +8,7 @@ VERSION=2.0
         modified:   application/resources/views/main/layouts/menu.blade.php
         modified:   application/routes/web.php
 
+ALTER TABLE `tb_pagina_sections` add `id_parent` INT(11) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `tb_pagina_sections` ADD `link` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`;
 ALTER TABLE `tb_pagina_sections` ADD `icone` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`
 

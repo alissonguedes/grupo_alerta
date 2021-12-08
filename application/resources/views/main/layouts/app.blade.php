@@ -20,8 +20,14 @@
 	@include('main.layouts.styles')
 
 	<style>
+		nav {
+			background-color: transparent !important;
+			box-shadow: none !important;
+		}
+
 		.site-content.container {
 			max-width: inherit;
+			padding: 0;
 		}
 
 	</style>
