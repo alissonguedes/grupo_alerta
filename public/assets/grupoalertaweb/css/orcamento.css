@@ -57,10 +57,10 @@
 }
 
 
-.text_orcamento {
+/* .text_orcamento {
 	height: 800px;
 	width: 800px;
-}
+} */
 
 .line1,
 .line2,
@@ -108,14 +108,14 @@
 }
 
 .box_formulario {
-	position: absolute;
-	width: 30%;
+	/* position: absolute; */
+	/* width: 30%; */
 	padding: 40px;
-	right: 90px;
-	top: 250px;
+	/* right: 90px; */
+	/* top: 250px; */
 	background: #d60000;
-	overflow: hidden;
-	z-index: 9999999999999;
+	/* overflow: hidden; */
+	/* z-index: 9999999999999; */
 	color: #fff;
 }
 
@@ -299,7 +299,7 @@
 		overflow: hidden;
 	}
 
-	.box_formulario {
+	/* .box_formulario {
 		position: static;
 		width: auto;
 		display: block;
@@ -310,7 +310,7 @@
 		overflow: hidden;
 		margin: auto;
 		margin-bottom: 40px;
-	}
+	} */
 
 	.title_form {
 		font-weight: bold;

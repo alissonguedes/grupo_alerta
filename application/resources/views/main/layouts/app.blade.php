@@ -25,7 +25,7 @@
 			box-shadow: none !important;
 		}
 
-		.site-content.container {
+		.site-content.container:not(#content){
 			max-width: inherit;
 			padding: 0;
 		}
