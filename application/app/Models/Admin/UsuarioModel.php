@@ -51,6 +51,7 @@ class UsuarioModel extends Authenticatable {
         $get = $this->select(
             'tb_acl_usuario.id',
             'tb_acl_usuario.id_grupo',
+            // 'tb_acl_grupo.grupo',
             DB::raw('(SELECT grupo FROM tb_acl_grupo WHERE id = id_grupo) as grupo'),
             'tb_acl_usuario.nome',
             'tb_acl_usuario.email',
@@ -59,8 +60,13 @@ class UsuarioModel extends Authenticatable {
             'tb_acl_usuario.status'
         );
 
-        $get->where('tb_acl_grupo.status', '1')
-            ->where('tb_acl_usuario.status', '1');
+        // $get->join('tb_acl_grupo', 'tb_acl_grupo.id', 'tb_acl_usuario.id_grupo', 'left');
+        // $get->where('tb_acl_grupo.status', '1');
+        // $get->where('tb_acl_usuario.status', '1');
+
+        if (Session::get('userdata')['id_grupo'] > 1) {
+            $get->where('id_grupo', '>', 1);
+        }
 
         if (!is_null($find)) {
             $get->where('id', $find);
@@ -106,9 +112,17 @@ class UsuarioModel extends Authenticatable {
 
         if (!is_null($login)) {
 
-            $user = $this->select('id', 'id_grupo', 'senha', 'permissao', 'nome', 'login', 'email', 'senha')
-                ->where('login', $login)
-                ->orWhere('email', $login)
+            $this->login = $login;
+
+            $user = $this->select('U.id', 'U.id_grupo', 'U.senha', 'U.permissao', 'U.nome', 'U.login', 'U.email', 'U.senha')
+                ->from('tb_acl_usuario', 'U')
+                ->where(function ($query) {
+                    return $query->where('login', $this->login)
+                        ->orWhere('email', $this->login);
+                })
+                ->join('tb_acl_grupo AS G', 'G.id', 'U.id_grupo', 'left')
+                ->where('G.status', '1')
+                ->where('U.status', '1')
                 ->first();
 
             if (isset($user)) {
