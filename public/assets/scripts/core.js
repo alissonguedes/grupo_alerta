@@ -320,6 +320,52 @@ function core() {
 							</div> \
 						</div> \
 						<!-- END subtítulo --> \
+						<!-- BEGIN link --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="input-field"> \
+									<label>Link</label> \
+									<input type="text" name="section[' + id + '][link]"> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END link --> \
+						<!-- BEGIN imagem de capa --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="file-field input-field"> \
+									<div class="btn"> \
+										<div class="file"> \
+											<i class="material-icons">attach_file</i> \
+										</div> \
+										<input type="file" name="section[' + id + '][imagem]"> \
+										<input type="hidden" name="section[' + id + '][imagem]"> \
+									</div> \
+									<div class="file-path-wrapper"> \
+										<input type="text" class="file-path validate" placeholder="Imagem da caixa"> \
+									</div> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END imagem de capa --> \
+						<!-- BEGIN ícone --> \
+						<div class="row"> \
+							<div class="col s12 mb-1"> \
+								<div class="file-field input-field"> \
+									<div class="btn"> \
+										<div class="file"> \
+											<i class="material-icons">attach_file</i> \
+										</div> \
+										<input type="file" name="section[' + id + '][icone]"> \
+										<input type="hidden" name="section[' + id + '][icone]"> \
+									</div> \
+									<div class="file-path-wrapper"> \
+										<input type="text" class="file-path validate" placeholder="Ícone da caixa"> \
+									</div> \
+								</div> \
+							</div> \
+						</div> \
+						<!-- END ícone --> \
 						<!-- BEGIN Texto --> \
 						<div class="row"> \
 							<div class="col s12 mb-1"> \

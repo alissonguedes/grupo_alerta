@@ -5,8 +5,7 @@ namespace App\Models\Main;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class NoticiaModel extends Model
-{
+class NoticiaModel extends Model {
 
     protected $table = 'tb_noticia';
     use HasFactory;
@@ -19,8 +18,7 @@ class NoticiaModel extends Model
         'status',
     ];
 
-    public function getNoticia($find = null, $limit = null)
-    {
+    public function getNoticia($find = null, $limit = null) {
 
         $get = $this->select('*');
 
@@ -56,12 +54,9 @@ class NoticiaModel extends Model
 
     }
 
-    public function getDestaques()
-    {
+    public function getDestaques() {
 
-        $this->limit = 3;
-
-        return $this->getNoticia(null, 3);
+        return $this->getNoticia(null, 10);
 
     }
 

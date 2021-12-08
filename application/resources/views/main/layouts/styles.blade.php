@@ -1,3 +1,6 @@
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
 <link rel="stylesheet" media="screen" href="{{ asset('assets/fonts/material-icons/material-icons.css') }}">
 <link rel="profile" href="https://gmpg.org/xfn/11">
 <title>GRUPO ALERTA</title>
@@ -74,12 +77,22 @@
 	}
 
 </style>
-<link rel="stylesheet" href="css/orcamento.css">
+
+<link rel="stylesheet" href="{{ asset('assets/grupoalertaweb/css/orcamento.css') }}">
 <link rel="stylesheet" id="wp-block-library-css" href="{{ asset('assets/grupoalertaweb/wp-includes/css/dist/block-library/style.min4c7e.css?ver=5.6.2') }}'" media="all" />
 <link rel="stylesheet" id="contact-form-7-css" href="{{ asset('assets/grupoalertaweb/wp-content/plugins/contact-form-7/includes/css/styles9dff.css?ver=5.3.2') }}" media="all" />
 <link rel="stylesheet" id="rs-plugin-settings-css" href="{{ asset('assets/grupoalertaweb/wp-content/plugins/revslider/public/assets/css/rs6072b.css?ver=6.3.5') }}" media="all" />
 <style id="rs-plugin-settings-inline-css">
 	#rs-demo-id {}
+
+	.container {
+		width: inherit !important;
+	}
+
+	nav {
+		background-color: transparent !important;
+		box-shadow: none !important;
+	}
 
 </style>
 <link rel="stylesheet" id="dsvy-all-gfonts-css" href="https://fonts.googleapis.com/css?family=Barlow%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%2Citalic%2Cregular%2Cregular%2C700%2C800%2C600%2C500%7CBarlow+Condensed%3A700%2C600%2C500&amp;ver=5.6.2" media="all" />

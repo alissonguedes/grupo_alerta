@@ -19,6 +19,12 @@
 
 	@include('main.layouts.styles')
 
+	<style>
+		.site-content.container {
+			max-width: inherit;
+		}
+
+	</style>
 </head>
 
 <body class="home page-template-default page page-id-12263 dsvy-sidebar-no elementor-default elementor-kit-12597 elementor-page elementor-page-12263">

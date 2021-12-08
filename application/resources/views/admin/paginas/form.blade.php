@@ -362,6 +362,55 @@ $input_label_hidden = null;
 									</div>
 									<!-- END subtítulo -->
 
+									<!-- BEGIN link -->
+									<div class="row">
+										<div class="col s12 mb-1">
+											<div class="input-field">
+												<label>Link</label>
+												<input type="text" name="section[{{ $index }}][link]" value="{{ isset($row) ? $section->link : null }}">
+											</div>
+										</div>
+									</div>
+									<!-- END link -->
+
+									<!-- BEGIN imagem de capa -->
+									<div class="row">
+										<div class="col s12 mb-1">
+											<div class="file-field input-field">
+												<div class="btn" style="background-image: url({{ isset($row) && isset($section->imagem) ? asset($section->imagem) : null }}); background-size: cover;">
+													<div class="file">
+														<i class="material-icons">attach_file</i>
+													</div>
+													<input type="file" name="section[{{ $index }}][imagem]">
+													<input type="hidden" name="section[{{ $index }}][imagem]" value="{{ isset($row) && isset($section->imagem) ? $section->imagem : null }}">
+												</div>
+												<div class="file-path-wrapper">
+													<input type="text" class="file-path validate" placeholder="Imagem da caixa">
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- END imagem de capa -->
+
+									<!-- BEGIN ícone -->
+									<div class="row">
+										<div class="col s12 mb-1">
+											<div class="file-field input-field">
+												<div class="btn" style="background-image: url({{ isset($row) && isset($section->icone) ? asset($section->icone) : null }}); background-size: cover;">
+													<div class="file">
+														<i class="material-icons">attach_file</i>
+													</div>
+													<input type="file" name="section[{{ $index }}][icone]">
+													<input type="hidden" name="section[{{ $index }}][icone]" value="{{ isset($row) && isset($section->icone) ? $section->icone : null }}">
+												</div>
+												<div class="file-path-wrapper">
+													<input type="text" class="file-path validate" placeholder="Ícone da caixa">
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- END ícone -->
+
 									<!-- BEGIN Texto -->
 									<div class="row">
 										<div class="col s12 mb-1">

@@ -85,7 +85,7 @@ class PaginaModel extends Authenticatable {
 
     public function getSections($id) {
 
-        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
+        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
         $get->from('tb_pagina_sections');
         $get->where('id_pagina', $id);
         $get->where('id_parent', '0');
@@ -202,7 +202,44 @@ class PaginaModel extends Authenticatable {
                     $data_section['slug']      = limpa_string($section['title']);
                     $data_section['subtitulo'] = $section['subtitle'];
                     $data_section['texto']     = $section['text'];
+                    $data_section['link']      = $section['link'];
+                    $data_section['imagem']    = $section['imagem'];
+                    $data_section['icone']     = $section['icone'];
                     $data_section['ordem']     = ++$ordem;
+
+                    if (is_object($section['imagem'])) {
+
+                        $file = $section['imagem'];
+
+                        $fileName = $file->getClientOriginalName();
+                        $fileExt  = $file->getClientOriginalExtension();
+                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                        $imgName  = explode('.', $fileName);
+                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+
+                        $file->storeAs($path, $imagem);
+
+                        $data_section['imagem'] = $path . $imagem;
+
+                    }
+
+                    if (is_object($section['icone'])) {
+
+                        $file = $section['icone'];
+
+                        $fileName = $file->getClientOriginalName();
+                        $fileExt  = $file->getClientOriginalExtension();
+                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                        $imgName  = explode('.', $fileName);
+                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+
+                        $file->storeAs($path, $imagem);
+
+                        $data_section['icone'] = $path . $imagem;
+
+                    }
 
                     $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 
@@ -300,7 +337,44 @@ class PaginaModel extends Authenticatable {
                     $data_section['slug']      = limpa_string($section['title']);
                     $data_section['subtitulo'] = $section['subtitle'];
                     $data_section['texto']     = $section['text'];
+                    $data_section['link']      = $section['link'];
+                    $data_section['imagem']    = $section['imagem'];
+                    $data_section['icone']     = $section['icone'];
                     $data_section['ordem']     = ++$ordem;
+
+                    if (is_object($section['imagem'])) {
+
+                        $file = $section['imagem'];
+
+                        $fileName = $file->getClientOriginalName();
+                        $fileExt  = $file->getClientOriginalExtension();
+                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                        $imgName  = explode('.', $fileName);
+                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+
+                        $file->storeAs($path, $imagem);
+
+                        $data_section['imagem'] = $path . $imagem;
+
+                    }
+
+                    if (is_object($section['icone'])) {
+
+                        $file = $section['icone'];
+
+                        $fileName = $file->getClientOriginalName();
+                        $fileExt  = $file->getClientOriginalExtension();
+                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+                        $imgName  = explode('.', $fileName);
+                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+
+                        $file->storeAs($path, $imagem);
+
+                        $data_section['icone'] = $path . $imagem;
+
+                    }
 
                     $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 

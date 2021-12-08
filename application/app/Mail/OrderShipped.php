@@ -3,22 +3,23 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderShipped extends Mailable
-{
+class OrderShipped extends Mailable {
+
     use Queueable, SerializesModels;
+
+    public $subject = 'Contato do site';
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct(Request $request) {
+        $this->request = $request;
     }
 
     /**
@@ -26,8 +27,9 @@ class OrderShipped extends Mailable
      *
      * @return $this
      */
-    public function build()
-    {
-        return $this->view('view.name');
+    public function build() {
+        $data['request'] = $this->request;
+        return $this->view('emails.orcamento', $data);
     }
+
 }

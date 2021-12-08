@@ -5,79 +5,84 @@
 =====================================================================
 */
 
-
+.elementor a:hover {
+	color: #fff;
+}
 
 @font-face {
 
-      font-family: "social";
-      src: url("../fontes/social_font.ttf") format("truetype");
+	font-family: "social";
+	src: url("../fontes/social_font.ttf") format("truetype");
 
-      }
+}
 
 
-.f_social{
+.f_social {
 	font-family: "social";
 }
 
 @font-face {
 
-      font-family: "futura";
-      src: url("../fontes/futura.ttf") format("truetype");
+	font-family: "futura";
+	src: url("../fontes/futura.ttf") format("truetype");
 
-      }
+}
 
-.f_futura{
+.f_futura {
 	font-family: "futura";
 }
 
 
 @font-face {
 
-      font-family: "avante";
-      src: url("../fontes/avante.ttf") format("truetype");
+	font-family: "avante";
+	src: url("../fontes/avante.ttf") format("truetype");
 
-      }
+}
 
-.f_avante{
+.f_avante {
 	font-family: "avante";
 }
 
 
 @font-face {
 
-      font-family: "impact";
-      src: url("../fontes/impact.ttf") format("truetype");
+	font-family: "impact";
+	src: url("../fontes/impact.ttf") format("truetype");
 
-      }
+}
 
-.f_impact{
+.f_impact {
 	font-family: "impact";
 }
 
 
-.text_orcamento{
+.text_orcamento {
 	height: 800px;
 	width: 800px;
 }
 
-.line1, .line2, .line3, .line4{
+.line1,
+.line2,
+.line3,
+.line4 {
 	display: block;
 }
 
-.line1{
+.line1 {
 	padding: 60px;
 }
 
-.logo_orc{
+.logo_orc {
 	width: 30%;
 	overflow: hidden;
 }
 
-.img_cem{
+.img_cem {
 	width: 100%;
 }
 
-.line2{
+.line2 {
 	background: url('../img/orcamento.jpg') center left;
 	background-size: cover;
 	-moz-background-size: cover;
@@ -85,24 +90,24 @@
 	padding: 60px;
 }
 
-.text_line2{
+.text_line2 {
 	overflow: hidden;
 	font-size: 42px;
 	line-height: normal;
 	color: #d60000;
 }
 
-.line3{
+.line3 {
 	background: #fff;
 	color: #505050;
 	padding: 60px;
 }
 
-.text_line3{
+.text_line3 {
 	overflow: hidden;
 }
 
-.box_formulario{
+.box_formulario {
 	position: absolute;
 	width: 30%;
 	padding: 40px;
@@ -114,14 +119,14 @@
 	color: #fff;
 }
 
-.title_form{
+.title_form {
 	font-weight: bold;
 	font-size: 28px;
 	margin-bottom: 30px;
 	display: block;
 }
 
-.caixa_form{
+.caixa_form {
 	display: block;
 	width: 100%;
 	background: #fff;
@@ -130,12 +135,12 @@
 	padding: 15px 20px;
 }
 
-.text_form{
+.text_form {
 	margin-bottom: 20px;
 	display: block;
 }
 
-.bt_form{
+.bt_form {
 	background: #d60000;
 	border: solid 1px #fff;
 	padding: 15px 25px;
@@ -150,20 +155,20 @@
 	-o-transition: all .5s ease;
 }
 
-.bt_form:hover{
+.bt_form:hover {
 	background: #000;
 }
 
-.line4{
+.line4 {
 	padding: 20px 60px;
 }
 
-.social{
+.social {
 	width: 150px;
 	overflow: hidden;
 }
 
-.ico_social{
+.ico_social {
 	color: #e00000;
 	opacity: 0.5;
 	font-size: 56px;
@@ -177,22 +182,22 @@
 	-ms-transition: all .5s ease;
 }
 
-.ico_social_whats{
+.ico_social_whats {
 	display: none;
 }
 
 
-.ico_social:hover{
+.ico_social:hover {
 	opacity: 1;
 }
 
 
 
-.box_interesse2{
+.box_interesse2 {
 	display: block;
 }
 
-.bg_transparent{
+.bg_transparent {
 	background-color: rgba(0, 0, 0, 0.7);
 	background: rgba(0, 0, 0, 0.7);
 	position: fixed;
@@ -203,9 +208,9 @@
 	left: 0;
 }
 
-.box{
+.box {
 	background: #fff;
-	position:fixed;
+	position: fixed;
 	width: 400px;
 	height: 30%;
 	overflow: hidden;
@@ -223,8 +228,8 @@
 }
 
 
-.bt_x{
-	background:url(../img/bt_fechar2.jpg);
+.bt_x {
+	background: url(../img/bt_fechar2.jpg);
 	width: 43px;
 	height: 43px;
 	position: absolute;
@@ -234,7 +239,7 @@
 	right: 0px;
 }
 
-.title_box{
+.title_box {
 	text-align: center;
 	font-size: 34px;
 	margin-bottom: 20px;
@@ -243,25 +248,28 @@
 @media only screen and (max-width: 970px) {
 
 
-	.line1, .line2, .line3, .line4{
+	.line1,
+	.line2,
+	.line3,
+	.line4 {
 		display: block;
 	}
 
-	.line1{
+	.line1 {
 		padding: 40px 0px;
 	}
 
-	.logo_orc{
+	.logo_orc {
 		width: 90%;
 		overflow: hidden;
 		margin: auto;
 	}
 
-	.img_cem{
+	.img_cem {
 		width: 100%;
 	}
 
-	.line2{
+	.line2 {
 		background: url('../img/orcamento.jpg') center center;
 		background-size: cover;
 		-moz-background-size: cover;
@@ -269,28 +277,29 @@
 		padding: 40px 0px;
 	}
 
-	.text_line2{
+	.text_line2 {
 		width: 90%;
 		overflow: hidden;
 		font-size: 18px;
 		line-height: normal;
-		text-align: center;;
+		text-align: center;
+		;
 		margin: auto;
 	}
 
-	.line3{
+	.line3 {
 		background: #fff;
 		color: #505050;
 		padding: 60px;
 		display: none;
 	}
 
-	.text_line3{
+	.text_line3 {
 		width: 45%;
 		overflow: hidden;
 	}
 
-	.box_formulario{
+	.box_formulario {
 		position: static;
 		width: auto;
 		display: block;
@@ -303,7 +312,7 @@
 		margin-bottom: 40px;
 	}
 
-	.title_form{
+	.title_form {
 		font-weight: bold;
 		font-size: 28px;
 		margin-bottom: 30px;
@@ -312,7 +321,7 @@
 		text-align: center;
 	}
 
-	.caixa_form{
+	.caixa_form {
 		display: block;
 		width: 100%;
 		background: #fff;
@@ -321,12 +330,12 @@
 		padding: 15px 20px;
 	}
 
-	.text_form{
+	.text_form {
 		margin-bottom: 20px;
 		display: block;
 	}
 
-	.bt_form{
+	.bt_form {
 		background: #d60000;
 		border: solid 1px #fff;
 		padding: 15px 25px;
@@ -341,21 +350,21 @@
 		-o-transition: all .5s ease;
 	}
 
-	.bt_form:hover{
+	.bt_form:hover {
 		background: #000;
 	}
 
-	.line4{
+	.line4 {
 		padding: 20px 60px;
 		display: none;
 	}
 
-	.social{
+	.social {
 		width: 150px;
 		overflow: hidden;
 	}
 
-	.ico_social{
+	.ico_social {
 		color: #e00000;
 		opacity: 0.5;
 		font-size: 56px;
@@ -369,22 +378,22 @@
 		-ms-transition: all .5s ease;
 	}
 
-	.ico_social_whats{
+	.ico_social_whats {
 		display: none;
 	}
 
 
-	.ico_social:hover{
+	.ico_social:hover {
 		opacity: 1;
 	}
 
 
 
-	.box_interesse2{
+	.box_interesse2 {
 		display: block;
 	}
 
-	.bg_transparent{
+	.bg_transparent {
 		background-color: rgba(0, 0, 0, 0.7);
 		background: rgba(0, 0, 0, 0.7);
 		position: fixed;
@@ -395,9 +404,9 @@
 		left: 0;
 	}
 
-	.box{
+	.box {
 		background: #fff;
-		position:fixed;
+		position: fixed;
 		width: 80%;
 		height: 50%;
 		overflow: hidden;
@@ -415,8 +424,8 @@
 	}
 
 
-	.bt_x{
-		background:url(../img/bt_fechar2.jpg);
+	.bt_x {
+		background: url(../img/bt_fechar2.jpg);
 		width: 43px;
 		height: 43px;
 		position: absolute;
@@ -426,7 +435,7 @@
 		right: 0px;
 	}
 
-	.title_box{
+	.title_box {
 		text-align: center;
 		font-size: 24px;
 		margin-bottom: 20px;

@@ -146,22 +146,42 @@ namespace App\Models\Main {
 
         }
 
-        public function getSections($id = null) {
+        public function debug($get) {
+            echo '==> ';
+            echo '<br>';
+            $query = str_replace(array('?'), array('\'%s\''), $get->toSql());
+            $query = vsprintf($query, $get->getBindings());
+            dump($query);
+            echo '<br>';
+            echo '==> ';
+        }
 
-            $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem');
+        public function getSections($section = null, $pagina = null) {
+
+            $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
             $get->from('tb_pagina_sections');
 
-            if (is_numeric($id)) {
-                $get->where('id_pagina', $id);
-            } else {
-                $get->where('slug', $id);
+            if (!is_null($pagina)) {
+                $this->pagina = $pagina;
+                $get->where('id_pagina', function ($query) {
+                    return $query->select('id')
+                        ->from('tb_pagina')
+                        ->where('slug', $this->pagina)
+                        ->orWhere('id', $this->pagina);
+                });
+            }
+
+            if (!is_null($section)) {
+                $get->where('id', $section);
+                $get->orWhere('slug', $section);
             }
 
             $get->where('id_parent', '0');
             $get->orderBy('ordem', 'ASC');
+
             $get = $get->get();
 
-            if (is_null($id)) {
+            if (is_null($section) || is_null($pagina)) {
                 return $get;
             }
 

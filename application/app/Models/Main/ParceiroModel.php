@@ -10,7 +10,13 @@ namespace App\Models\Main {
 
         public function getParceiros() {
             return $this->where('status', '1')
-				->get();
+                ->get();
+        }
+
+        public function getComentarios() {
+            return $this->from('tb_comentario')
+                ->where('status', '1')
+                ->get();
         }
 
     }

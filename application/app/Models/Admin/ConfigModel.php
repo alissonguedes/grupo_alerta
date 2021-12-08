@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class ConfigModel extends Authenticatable
-{
+class ConfigModel extends Authenticatable {
 
     use HasFactory, Notifiable;
 
@@ -49,8 +48,7 @@ class ConfigModel extends Authenticatable
         'status',
     ];
 
-    public function debug($get)
-    {
+    public function debug($get) {
         echo '==> ';
         echo '<br>';
         $query = str_replace(array('?'), array('\'%s\''), $get->toSql());
@@ -60,8 +58,7 @@ class ConfigModel extends Authenticatable
         echo '==> ';
     }
 
-    public function getConfig($find = null)
-    {
+    public function getConfig($find = null) {
 
         $get = $this->select('id', 'config', 'value');
 
@@ -95,22 +92,21 @@ class ConfigModel extends Authenticatable
 
     }
 
-    public function create($request)
-    {
+    public function create($request) {
 
-        $data = [];
-        $path = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/';
+        $data     = [];
+        $path     = 'assets/grupoalertaweb/wp-content/uploads/' . date('Y') . '/' . date('m') . '/';
         $origName = null;
         $fileName = null;
-        $imagem = null;
+        $imagem   = null;
 
         if ($request->file('site_logo')) {
-            $file = $request->file('site_logo');
+            $file     = $request->file('site_logo');
             $fileName = sha1($file->getClientOriginalName());
-            $fileExt = $file->getClientOriginalExtension();
-            $imgName = explode('.', ($file->getClientOriginalName()));
+            $fileExt  = $file->getClientOriginalExtension();
+            $imgName  = explode('.', ($file->getClientOriginalName()));
             $origName = limpa_string($imgName[count($imgName) - 2], '_') . '.' . $fileExt;
-            $imagem = limpa_string($fileName) . '.' . $fileExt;
+            $imagem   = limpa_string($fileName) . '.' . $fileExt;
             $file->storeAs($path, $imagem);
             $data[] = ['config' => 'site_logo', 'value' => $path . $imagem];
             $data[] = ['config' => 'original_logo_name', 'value' => $origName];
@@ -135,7 +131,7 @@ class ConfigModel extends Authenticatable
         }
 
         // for ($i = 0; $i < count($data); $i++) {
-        foreach($data as $conf) {
+        foreach ($data as $conf) {
 
             $issetConfig = $this->select('config', 'value')->where('config', $conf['config'])->first();
 

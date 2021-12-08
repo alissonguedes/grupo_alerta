@@ -10,3 +10,5 @@ VERSION=2.0
 
 ALTER TABLE `tb_pagina_sections` ADD `link` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`;
 ALTER TABLE `tb_pagina_sections` ADD `icone` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`
+
+CREATE TABLE `alissond_grupoalertaweb`.`tb_comentario` ( `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `autor` VARCHAR(100) NOT NULL , `imagem` VARCHAR(255) NULL DEFAULT NULL , `profissao` VARCHAR(100) NULL DEFAULT NULL , `estrelas` INT(1) NOT NULL DEFAULT '5' , `texto` VARCHAR(1000) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL , `status` ENUM('0','1') NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;

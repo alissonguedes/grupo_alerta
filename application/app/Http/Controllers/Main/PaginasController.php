@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Main;
 
-use App\Mail\ContactPage;
+use App\Mail\OrderShipped;
+// use App\Mail\ContactPage;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
@@ -43,7 +44,10 @@ class PaginasController extends Controller {
 
     public function grupo(Request $request) {
 
-        $dados['parceiros'] = $this->parceiro_model->getParceiros();
+        $dados['pagina_model']    = $this->pagina_model;
+        $dados['sobre_o_grupo']   = $this->pagina_model->getSections('sobre-o-grupo-alerta', 'o-grupo');
+        $dados['nossos_servicos'] = $this->pagina_model->getSections('nossos-servicos', 'o-grupo');
+        $dados['parceiros']       = $this->parceiro_model->getParceiros();
 
         return view('main.paginas.grupo', $dados);
 
@@ -104,7 +108,8 @@ class PaginasController extends Controller {
         Mail::to('alissonguedes87@gmail.com')
             ->cc($moreUsers)
             ->bcc($evenMoreUsers)
-            ->send(new ContactPage($request));
+            ->send(new OrderShipped($request));
+        // ->send(new ContactPage($request));
 
     }
 

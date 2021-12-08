@@ -1,6 +1,6 @@
 <script>
-    var BASE_URL = "{{ url('/') }}/admin/";
-    var BASE_PATH = "{{ base_path() }}";
+ var BASE_URL = "{{ url('/') }}/admin/";
+ var BASE_PATH = "{{ implode('/', explode('/index.php', $_SERVER['SCRIPT_FILENAME'])) }}";
 </script>
 
 <!-- plugins | jQuery/Materialize -->
