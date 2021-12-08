@@ -566,13 +566,15 @@ $input_label_hidden = null;
 			</div>
 			<!-- END section -->
 
-			<div class="row">
-				<div class="col s12 mt-3 mb-3">
-					<button type="button" class="btn btn-small add-section waves-effect" value="{{ isset($row) ? $row->id : null }}">
-						<i class="material-icons left">add</i> Adicionar seção
-					</button>
+			@if (session()->has('userdata') && session()->get('userdata')['id_grupo'] == 1)
+				<div class="row">
+					<div class="col s12 mt-3 mb-3">
+						<button type="button" class="btn btn-small add-section waves-effect" value="{{ isset($row) ? $row->id : null }}">
+							<i class="material-icons left">add</i> Adicionar seção
+						</button>
+					</div>
 				</div>
-			</div>
+			@endif
 
 		</div>
 		<!-- END sections -->
