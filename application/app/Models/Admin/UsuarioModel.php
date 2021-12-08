@@ -59,6 +59,9 @@ class UsuarioModel extends Authenticatable {
             'tb_acl_usuario.status'
         );
 
+        $get->where('tb_acl_grupo.status', '1')
+            ->where('tb_acl_usuario.status', '1');
+
         if (!is_null($find)) {
             $get->where('id', $find);
             return $get;
