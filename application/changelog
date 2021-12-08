@@ -10,6 +10,9 @@ VERSION=2.0
 
 ALTER TABLE `tb_pagina_sections` add `id_parent` INT(11) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `tb_pagina_sections` ADD `link` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`;
-ALTER TABLE `tb_pagina_sections` ADD `icone` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`
+ALTER TABLE `tb_pagina_sections` ADD `icone` VARCHAR(255) NULL DEFAULT NULL AFTER `imagem`;
+ALTER TABLE `tb_pagina_sections` ADD `status` ENUM('0','1') NOT NULL DEFAULT '1' AFTER `id_parent`;
+ALTER TABLE `tb_pagina_sections` DROP FOREIGN KEY `fk_tb_pagina_sections`; ALTER TABLE `tb_pagina_sections` ADD CONSTRAINT `fk_tb_pagina_sections_id_pagina` FOREIGN KEY (`id_pagina`) REFERENCES `tb_pagina`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 CREATE TABLE `alissond_grupoalertaweb`.`tb_comentario` ( `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `autor` VARCHAR(100) NOT NULL , `imagem` VARCHAR(255) NULL DEFAULT NULL , `profissao` VARCHAR(100) NULL DEFAULT NULL , `estrelas` INT(1) NOT NULL DEFAULT '5' , `texto` VARCHAR(1000) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL , `status` ENUM('0','1') NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;

@@ -325,12 +325,16 @@ $input_label_hidden = null;
 								<h4 class="left">
 									Seção - <span>{{ isset($row) && $section->titulo ? $section->titulo : 'Sem título' }}</span>
 								</h4>
+
 								<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light toggle" data-toggle="card-body">
 									<i class="material-icons grey-text">keyboard_arrow_up</i>
 								</a>
-								<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="3" data-tooltip="Remover Seção">
-									<i class="material-icons red-text">delete</i>
-								</a>
+
+								@if (session()->has('userdata') && session()->get('userdata')['id_grupo'] == 1)
+									<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="3" data-tooltip="Remover Seção">
+										<i class="material-icons red-text">delete</i>
+									</a>
+								@endif
 
 							</div>
 
@@ -434,9 +438,11 @@ $input_label_hidden = null;
 														<div class="card-content">
 															<div class="card-title">
 																<h4 class="left">Caixa de apresentação {{ $ind + 1 }}</h4>
-																<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="4" data-tooltip="Remover Caixa">
-																	<i class="material-icons red-text">delete</i>
-																</a>
+																@if (session()->has('userdata') && session()->get('userdata')['id_grupo'] == 1)
+																	<a href="#" class="btn btn-floating btn-flat transparent float-right waves-effect waves-light" data-delete="4" data-tooltip="Remover Caixa">
+																		<i class="material-icons red-text">delete</i>
+																	</a>
+																@endif
 															</div>
 															<div class="card-body">
 																<!-- BEGIN título -->
@@ -526,18 +532,20 @@ $input_label_hidden = null;
 												</div>
 											@endforeach
 										</section>
-										<div class="col s4">
-											<div class="card card-add">
-												<div class="card-content no-padding">
-													<div class="card-title"></div>
-													<div class="card-body">
-														<button type="button" class="add-card waves-effect" value="{{ isset($row) ? $row->id : null }}">
-															<i class="material-icons">add</i>
-														</button>
+										@if (session()->has('userdata') && session()->get('userdata')['id_grupo'] == 1)
+											<div class="col s4">
+												<div class="card card-add">
+													<div class="card-content no-padding">
+														<div class="card-title"></div>
+														<div class="card-body">
+															<button type="button" class="add-card waves-effect" value="{{ isset($row) ? $row->id : null }}">
+																<i class="material-icons">add</i>
+															</button>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
+										@endif
 									</div>
 									<!-- END sub-sections -->
 
