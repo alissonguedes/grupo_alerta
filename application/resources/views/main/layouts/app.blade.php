@@ -15,7 +15,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="{{ config('theme_color') }}">
 	<meta name="msapplication-navbutton-color" content="{{ config('theme_color') }}">
 
-	{{-- <title>{{ tradutor(get_config('site_title')) }} - @yield('title')</title> --}}
+	<title>{{ get_config('site_title') }} - @yield('title')</title>
 
 	@include('main.layouts.styles')
 
@@ -25,7 +25,7 @@
 			box-shadow: none !important;
 		}
 
-		.site-content.container:not(#content){
+		.site-content.container:not(#content) {
 			max-width: inherit;
 			padding: 0;
 		}

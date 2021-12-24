@@ -1,16 +1,22 @@
 <h2>Contato do site {{ get_config('site_title') }}</h2>
 
 <p>
-	O cliente {{ $request->nome }} entrou em contato através do site com o interesse em obter detalhes sobre os seguintes serviços:
+	O cliente <strong>{{ $request->nome }}</strong> entrou em contato através do site com o interesse em obter detalhes sobre os seguintes serviços:
 </p>
 
 <p>
 <ul>
-	@foreach ($request->servicos as $servico)
-		<li>{{ $servico }}</li>
-	@endforeach
+	@if (isset($request->servicos))
+		@foreach ($request->servicos as $servico)
+			<li>{{ $servico }}</li>
+		@endforeach
+	@endif
+	@if (isset($request->outros_servicos))
+		<li>{{ $request->outros }}</li>
+	@endif
 </ul>
 </p>
+
 
 <p>Dados do cliente:</p>
 

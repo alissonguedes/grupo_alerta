@@ -198,3 +198,176 @@
   Form.init();
  })
 </script>
+
+
+<style>
+	.input-field {
+		margin-bottom: 15px;
+	}
+
+	.input-field input:disabled {
+		background: rgba(255, 255, 255, 0.3) !important;
+	}
+
+	.input-field label {
+		margin-right: 20px;
+		cursor: pointer;
+	}
+
+	.input-field input,
+	.input-field select,
+	checkbox {
+		margin-bottom: 0;
+	}
+
+	.input-field.error .error {
+		position: relative;
+		font-size: 13px;
+		color: var(--red-lighten-4);
+	}
+
+	#contato .input-field.error .error {
+		color: var(--red);
+	}
+
+	.input-field .material-icons {
+		font-size: inherit;
+		top: 2px;
+		position: relative;
+		color: var(--red);
+		margin-right: 10px;
+	}
+
+	input[type="text"]:disabled {
+		background: #bbb;
+		cursor: not-allowed;
+	}
+
+	@media only screen and (min-width: 993px) {
+
+		#toast-container {
+			top: 10%;
+			right: 7%;
+			max-width: 86%;
+		}
+
+	}
+
+	#toast-container {
+		display: block;
+		position: fixed;
+		z-index: 10000;
+	}
+
+	.toast {
+		border-radius: 2px;
+		top: 35px;
+		width: auto;
+		margin-top: 10px;
+		position: relative;
+		max-width: 100%;
+		height: auto;
+		min-height: 48px;
+		line-height: 1.5em;
+		background-color: #323232;
+		padding: 10px 25px;
+		font-size: 1.1rem;
+		font-weight: 300;
+		color: #fff;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		-ms-flex-align: center;
+		align-items: center;
+		-webkit-box-pack: justify;
+		-webkit-justify-content: space-between;
+		-ms-flex-pack: justify;
+		justify-content: space-between;
+		cursor: default;
+	}
+
+	.toast .toast-action {
+		color: #eeff41;
+		font-weight: 500;
+		margin-right: 0;
+		margin-left: 1rem;
+	}
+
+	.btn,
+	.btn-large,
+	.btn-small {
+		text-decoration: none;
+		color: #fff;
+		background-color: #26a69a;
+		text-align: center;
+		letter-spacing: .5px;
+		-webkit-transition: background-color .2s ease-out;
+		transition: background-color .2s ease-out;
+		cursor: pointer;
+	}
+
+	.btn,
+	.btn-large,
+	.btn-small,
+	.btn-floating,
+	.btn-large,
+	.btn-small,
+	.btn-flat {
+		font-size: 14px;
+		outline: 0;
+	}
+
+	.btn,
+	.btn-large,
+	.btn-small,
+	.btn-flat {
+		border: none;
+		border-radius: 2px;
+		display: flex;
+		height: 36px;
+		line-height: 36px;
+		padding: 0 16px;
+		text-transform: uppercase;
+		vertical-align: middle;
+		-webkit-tap-highlight-color: transparent;
+		place-content: center;
+		align-items: center;
+		border-radius: 24px;
+	}
+
+	button[type="submit"] {
+		font-family: 'Barlow', sans-serif;
+		font-size: 13px;
+		line-height: 13px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		background-color: #1a191d;
+		cursor: pointer;
+		font-size: 13px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		padding: 20px 30px;
+		outline: none;
+		border-radius: 0px;
+		font-weight: 700;
+		position: relative;
+		background-color: #222;
+		border: none;
+		font-family: inherit;
+		cursor: pointer;
+		-webkit-transition: all .6s;
+		-moz-transition: all .6s;
+		color: #fff;
+		letter-spacing: 0.3px;
+	}
+
+	button[type="submit"]:disabled {
+		background: #666;
+		color: #999;
+		cursor: not-allowed;
+	}
+
+</style>

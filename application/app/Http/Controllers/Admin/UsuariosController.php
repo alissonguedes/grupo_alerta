@@ -77,7 +77,7 @@ class UsuariosController extends Controller
 			'email' => ['required', 'unique:tb_acl_usuario,email']
 		]);
 
-		$url = url('admin/usuarios ');
+		$url = url('admin/usuarios');
 		$type = 'back';
 
 		if ($this->usuario_model->create($request)) {
@@ -155,7 +155,7 @@ class UsuariosController extends Controller
 	public function delete(Request $request)
 	{
 
-		if ( ! Session::has('userdata')) { 
+		if ( ! Session::has('userdata')) {
 			if ( $request -> ajax() )
 				return abort(403);
 			else

@@ -326,10 +326,11 @@ Route::prefix('/')->group(function () {
 
     // Orçamento
     Route::get('/orcamento', [Paginas::class, 'orcamento'])->name('orcamento');
+    Route::post('/orcamento', [Paginas::class, 'send_orcamento_form'])->name('contato.send_mail_orcamento');
 
     // Contato
     Route::get('/contato', [Paginas::class, 'contato'])->name('contato');
-    Route::post('/contato', [Paginas::class, 'send_contact_form'])->name('contato.send_mail');
+    Route::post('/contato', [Paginas::class, 'send_contact_form'])->name('contato.send_mail_contato');
 
     $menus = new PaginaModel();
 

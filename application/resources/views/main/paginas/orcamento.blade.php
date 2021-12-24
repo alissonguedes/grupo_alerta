@@ -37,13 +37,10 @@
 
 					<div class="title_form">Preencha o Formulário</div>
 
-					<form method="post" action="{{ route('contato.send_mail') }}" novalidate>
+					<form method="post" action="{{ route('contato.send_mail_orcamento') }}" novalidate>
 						@csrf
 						@method('post')
 
-						@error('nome')
-							O nome é importante
-						@enderror
 						<div class="input-field">
 							<input type="text" name="nome" class="caixa_form browser-default" placeholder="Nome Completo" required>
 						</div>
@@ -105,41 +102,64 @@
 
 						</style>
 						<div class="text_form">Escolha quais serviços deseja:</div>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Alarme" class="browser-default">
-							<span> Alarme </span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Cerca" class="browser-default"> <span>Cerca</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="CFTV" class="browser-default"> <span>CFTV</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Monitoramento" class="browser-default"> <span>Monitoramento</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Manutenção" class="browser-default"> <span>Manutenção</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Controle de Acesso" class="browser-default"> <span>Controle de Acesso</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Vigilância Armada e Desarmada" class="browser-default"> <span>Vigilância Armada e Desarmada</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Rastreamento de Veículos" class="browser-default"> <span>Rastreamento de Veículos</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Terceirização de Serviços" class="browser-default"> <span>Terceirização de Serviços</span>
-						</label>
-						<label>
-							<input type="checkbox" name="servicos[]" value="Construção" class="browser-default"> <span>Construção</span>
-						</label>
-						<br>
-						<label>
-							<input type="checkbox" name="outros_servicos" class="browser-default"> <span>Outros</span>
-						</label>
+						<div class="input-field">
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Alarme" class="browser-default">
+									<span> Alarme </span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Cerca" class="browser-default"> <span>Cerca</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="CFTV" class="browser-default"> <span>CFTV</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Monitoramento" class="browser-default"> <span>Monitoramento</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Manutenção" class="browser-default"> <span>Manutenção</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Controle de Acesso" class="browser-default"> <span>Controle de Acesso</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Vigilância Armada e Desarmada" class="browser-default"> <span>Vigilância Armada e Desarmada</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Rastreamento de Veículos" class="browser-default"> <span>Rastreamento de Veículos</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Terceirização de Serviços" class="browser-default"> <span>Terceirização de Serviços</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="servicos[]" value="Construção" class="browser-default"> <span>Construção</span>
+								</label>
+							</div>
+							<div class="">
+								<label>
+									<input type="checkbox" name="outros_servicos" class="browser-default"> <span>Outros</span>
+								</label>
+							</div>
+						</div>
 						<div class="text_form">Caso tenha marcado <strong>"Outros"</strong> Informe qual:</div>
 						<div class="input-field">
 							<input type="text" name="outros" id="outros" class="caixa_form browser-default" disabled="disabled">
@@ -154,50 +174,9 @@
 						</script>
 
 						<br>
-						<input type="submit" class="bt_form f_avante" name="enviar" value="Solicitar Orçamento">
+						<button type="submit" class="bt_form f_avante" name="enviar">Solicitar Orçamento</button>
 					</form>
 				</div>
-
-				<style>
-					.input-field {
-						margin-bottom: 15px;
-					}
-
-					.input-field input:disabled {
-						background: rgba(255, 255, 255, 0.3) !important;
-					}
-
-					.input-field label {
-						margin-right: 20px;
-						cursor: pointer;
-					}
-
-					.input-field input,
-					.input-field select,
-					checkbox {
-						margin-bottom: 0;
-					}
-
-					.input-field.error .error {
-						position: relative;
-						font-size: 13px;
-						color: var(--red-lighten-4);
-					}
-
-					.input-field .material-icons {
-						font-size: inherit;
-						top: -32px;
-						position: absolute;
-						color: var(--red);
-						right: 10px;
-					}
-
-					input[type="text"]:disabled {
-						background: #bbb;
-						cursor: not-allowed;
-					}
-
-				</style>
 
 			</div>
 		</div>

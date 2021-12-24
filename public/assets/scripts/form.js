@@ -481,7 +481,9 @@ var Form = {
 
 	showMessage: ($text, $status, $title = '') => {
 
-		if (!SHOW_DEFAULTS_MESSAGES) return false;
+		// if (!SHOW_DEFAULTS_MESSAGES) return false;
+		$('.input-field').removeClass('error').find('.error').remove();
+		Form.clearErrors();
 
 		$('#toast-container').children().animate({
 			marginLeft: '0.3in',
@@ -519,6 +521,8 @@ var Form = {
 	},
 
 	showErrors: (error, status) => {
+
+		Form.clearErrors();
 
 		if (SHOW_DEFAULTS_MESSAGES && typeof error.message !== 'undefined') {
 			M.toast({

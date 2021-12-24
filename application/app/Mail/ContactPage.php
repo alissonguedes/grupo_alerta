@@ -11,8 +11,6 @@ class ContactPage extends Mailable {
 
     use Queueable, SerializesModels;
 
-    // public $subject = 'Contato do site';
-
     /**
      * Create a new message instance.
      *
@@ -20,7 +18,6 @@ class ContactPage extends Mailable {
      */
     public function __construct(Request $request) {
 
-        $this->setSubject('Contato do Site ' . get_config('site_title'));
         $this->request = $request;
 
     }
@@ -31,18 +28,13 @@ class ContactPage extends Mailable {
      * @return $this
      */
     public function build() {
-        $data['request'] = $this->request;
-        return $this->view('emails.contato', $data);
-    }
 
-    // /**
-    //  * Build the message.
-    //  *
-    //  * @return $this
-    //  */
-    // public function build()
-    // {
-    //     return $this->markdown('emails.orcamento');
-    // }
+        $data['request'] = $this->request;
+
+        return $this->from(get_config('contact_email'), get_config('site_title'))
+            ->subject('Contato do Site ' . get_config('site_title'))
+            ->view('emails.contato', $data);
+
+    }
 
 }

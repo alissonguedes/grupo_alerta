@@ -11,8 +11,6 @@ class OrderShipped extends Mailable {
 
     use Queueable, SerializesModels;
 
-    public $subject = 'Contato do site';
-
     /**
      * Create a new message instance.
      *
@@ -28,8 +26,13 @@ class OrderShipped extends Mailable {
      * @return $this
      */
     public function build() {
+
         $data['request'] = $this->request;
-        return $this->view('emails.orcamento', $data);
+
+        return $this->from(get_config('contact_email'), get_config('site_title'))
+            ->subject('Solicitação de orçamento pelo site ' . get_config('site_title'))
+            ->view('emails.orcamento', $data);
+
     }
 
 }

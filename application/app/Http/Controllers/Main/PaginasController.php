@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Main;
 
+use App\Mail\ContactPage;
 use App\Mail\OrderShipped;
-// use App\Mail\ContactPage;
 use App\Models\Main\BannerModel;
 use App\Models\Main\NoticiaModel;
 use App\Models\Main\PaginaModel;
@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class PaginasController extends Controller {
+
+    private $mail_to = 'alissonguedes87@gmail.com';
 
     public function __construct() {
         $this->banner_model   = new BannerModel();
@@ -86,6 +88,39 @@ class PaginasController extends Controller {
             'nome'     => 'required',
             'email'    => 'required',
             'telefone' => 'required',
+            'setor'    => 'required',
+            'mensagem' => 'required',
+        ];
+
+        $request->validate($validate);
+
+        $toUser        = $this->mail_to;
+        $moreUsers     = [];
+        $evenMoreUsers = [];
+
+        Mail::to($toUser)
+            ->cc($moreUsers)
+            ->bcc($evenMoreUsers)
+            ->send(new ContactPage($request));
+
+        if (Mail::failures()) {
+            $status  = 'error';
+            $message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
+        } else {
+            $status  = 'success';
+            $message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
+        }
+
+        return json_encode(['status' => $status, 'message' => $message]);
+
+    }
+
+    public function send_orcamento_form(Request $request) {
+
+        $validate = [
+            'nome'     => 'required',
+            'email'    => 'required',
+            'telefone' => 'required',
             'endereco' => 'required',
             'cidade'   => 'required',
             'estado'   => 'required',
@@ -101,15 +136,25 @@ class PaginasController extends Controller {
 
         $request->validate($validate);
 
+        $toUser        = $this->mail_to;
         $moreUsers     = [];
         $evenMoreUsers = [];
 
-        // To é o endereço de e-mail para onde será enviado
-        Mail::to('alissonguedes87@gmail.com')
+        Mail::to($toUser)
             ->cc($moreUsers)
             ->bcc($evenMoreUsers)
             ->send(new OrderShipped($request));
         // ->send(new ContactPage($request));
+
+        if (Mail::failures()) {
+            $status  = 'error';
+            $message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
+        } else {
+            $status  = 'success';
+            $message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
+        }
+
+        return json_encode(['status' => $status, 'message' => $message]);
 
     }
 
