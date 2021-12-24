@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 class PaginasController extends Controller {
 
-    private $mail_to = 'alissonguedes87@gmail.com';
+    private $mail_to = 'contato@grupoalertaweb.com.br';
 
     public function __construct() {
         $this->banner_model   = new BannerModel();
