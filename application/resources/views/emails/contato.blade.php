@@ -20,6 +20,10 @@
 		<td>{{ $request->telefone }}</td>
 	</tr>
 	<tr>
+		<td style="text-align: right !important; font-weight: bold !important;">Cidade: </td>
+		<td>{{ $request->cidade }}</td>
+	</tr>
+	<tr>
 		<td style="text-align: right !important; font-weight: bold !important;">Estado:</td>
 		<td>{{ $request->setor }}</td>
 	</tr>

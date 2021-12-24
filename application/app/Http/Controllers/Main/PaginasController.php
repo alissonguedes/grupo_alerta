@@ -88,6 +88,7 @@ class PaginasController extends Controller {
             'nome'     => 'required',
             'email'    => 'required',
             'telefone' => 'required',
+            'cidade'   => 'required',
             'setor'    => 'required',
             'mensagem' => 'required',
         ];
