@@ -1,8 +1,8 @@
 @extends('main.paginas.template')
 
-{{-- @if (!isset($row))
-    {{ exit(view('main.paginas.404')) }}
-@endif --}}
+@if (!isset($grupo))
+	{{ exit(view('main.paginas.404')) }}
+@endif
 
 @section('title', 'O Grupo')
 @section('subtitle', 'quem somos')
@@ -14,7 +14,7 @@
 			<div class="elementor-section elementor-top-section elementor-element elementor-element-27ed5ea2 dsvy-bg-color-yes dsvy-elementor-bg-color-white dsvy-col-stretched-none dsvy-bg-color-over-image elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="27ed5ea2" data-element_type="section">
 				<div class="elementor-container elementor-column-gap-default">
 					@php
-						if (isset($sobre_o_grupo->imagem)):
+						if (isset($grupo->imagem)):
 						$div = 'elementor-col-50';
 						else:
 						$div = 'elementor-col-100';
@@ -26,20 +26,20 @@
 								<div class="elementor-widget-container">
 									<div class="dsvy-heading-subheading -align dsvy-reverse-heading-yes">
 										<h4 class="dsvy-element-subtitle">
-											{{ $sobre_o_grupo->titulo }}
+											{{ $grupo->titulo }}
 										</h4>
 										<h2 class="dsvy-element-title">
-											{{ $sobre_o_grupo->subtitulo }}
+											{{ $grupo->subtitulo }}
 										</h2>
 										<div class="dsvy-heading-desc">
-											<?= $sobre_o_grupo->texto ?>
+											<?= $grupo->texto ?>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					@if (isset($sobre_o_grupo->imagem))
+					@if (isset($grupo->imagem))
 						<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-7d428e2b dsvy-bg-color-over-image" data-id="7d428e2b" data-element_type="column">
 							<div class="elementor-widget-wrap elementor-element-populated">
 								<section class="elementor-section elementor-inner-section elementor-element elementor-element-58764e3c dsvy-col-stretched-none dsvy-bg-color-over-image elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="58764e3c" data-element_type="section">
@@ -49,7 +49,7 @@
 												<div class="elementor-element elementor-element-2cdb94fc dsvy-responsive-imge-1 elementor-widget elementor-widget-image" data-id="2cdb94fc" data-element_type="widget" data-widget_type="image.default">
 													<div class="elementor-widget-container">
 														<div class="elementor-image">
-															<img width="260" height="270" src="{{ asset($sobre_o_grupo->imagem) }}" class="attachment-full size-full" alt="" loading="lazy" />
+															<img width="260" height="270" src="{{ asset($grupo->imagem) }}" class="attachment-full size-full" alt="" loading="lazy" />
 														</div>
 													</div>
 												</div>
@@ -64,6 +64,34 @@
 							</div>
 						</div>
 					@endif
+
+					@if (isset($arquivos))
+						<!-- #primary -->
+						<aside id="secondary" class="widget-area designervily-sidebar col-md-3 col-lg-3" aria-label="Service Sidebar">
+
+							<aside id="text-2" class="widget-even widget-2 widget widget_text digicop_widget  digicop_widget_count_2">
+
+								<h2 class="widget-title">Arquivos</h2>
+
+								<div class="textwidget">
+									<div class="download">
+
+										@foreach ($arquivos as $f)
+											<div class="item-download">
+												<a href="{{ route('paginas.download', [$grupo->id, $f->id]) }}" rel="noopener noreferrer">{{ $f->realname }}</a>
+											</div>
+										@endforeach
+
+									</div>
+								</div>
+							</aside>
+							<aside id="media_image-2" class="widget-odd widget-last widget-3 widget widget_media_image digicop_widget  digicop_widget_count_3">
+								<img width="308" height="481" src="{{ asset('assets/grupoalertaweb/img/banner-a2.jpg') }}" class="image wp-image-13784  attachment-full size-full" alt="" loading="lazy" style="max-width: 100%; height: auto;" />
+							</aside>
+						</aside>
+						<!-- #secondary -->
+					@endif
+
 				</div>
 			</div>
 
@@ -98,9 +126,13 @@
 																<h4 class="dsvy-hide">{{ $row->nome }}</h4>
 																<div class="dsvy-featured-wrapper">
 																	<br>
-																	@if (!is_null($row->site))<a href="{{ $row->site }}">@endif
+																	@if (!is_null($row->site))
+																		<a href="{{ $row->site }}">
+																	@endif
 																	<img loading="lazy" width="145" height="60" src="{{ asset($row->imagem) }}" alt="" />
-																	@if (!is_null($row->site))</a>@endif
+																	@if (!is_null($row->site))
+																		</a>
+																	@endif
 																</div>
 															</div>
 														</article>

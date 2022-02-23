@@ -11,206 +11,241 @@ use App\Models\Main\ParceiroModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
-class PaginasController extends Controller {
+class PaginasController extends Controller
+{
 
-    private $mail_to = 'contato@grupoalertaweb.com.br';
+	private $mail_to = 'contato@grupoalertaweb.com.br';
 
-    public function __construct() {
-        $this->banner_model   = new BannerModel();
-        $this->pagina_model   = new PaginaModel();
-        $this->news_model     = new NoticiaModel();
-        $this->parceiro_model = new ParceiroMOdel();
-    }
+	public function __construct()
+	{
+		$this->banner_model   = new BannerModel();
+		$this->pagina_model   = new PaginaModel();
+		$this->news_model     = new NoticiaModel();
+		$this->parceiro_model = new ParceiroMOdel();
+	}
 
-    public function index($menu = null, $page = null) {
+	public function index($menu = null, $page = null)
+	{
 
-        $dados['pagina_model'] = $this->pagina_model;
+		$dados['pagina_model'] = $this->pagina_model;
 
-        $dados['paginas'] = $this;
-        $pagina           = $this->pagina_model->getPagina($menu);
+		$dados['paginas'] = $this;
+		$pagina           = $this->pagina_model->getPagina($menu);
 
-        if (isset($pagina)) {
+		if (isset($pagina)) {
 
-            $dados['row'] = $pagina;
+			$dados['row'] = $pagina;
 
-            if ($pagina->tipo == 'galeria') {
-                return $this->fotos($pagina, $page);
-            }
+			if ($pagina->tipo == 'galeria') {
+				return $this->fotos($pagina, $page);
+			}
 
-        }
+		}
 
-        $dados['row'] = $this->pagina_model->getPagina($menu, $page);
-        return view('main.paginas.index', $dados);
+		$dados['row'] = $this->pagina_model->getPagina($menu, $page);
+		return view('main.paginas.index', $dados);
 
-    }
+	}
 
-    public function grupo(Request $request) {
+	public function grupo(Request $request)
+	{
 
-        $dados['pagina_model']    = $this->pagina_model;
-        $dados['sobre_o_grupo']   = $this->pagina_model->getSections('sobre-o-grupo-alerta', 'o-grupo');
-        $dados['nossos_servicos'] = $this->pagina_model->getSections('nossos-servicos', 'o-grupo');
-        $dados['parceiros']       = $this->parceiro_model->getParceiros();
+		$dados['pagina_model']    = $this->pagina_model;
+		$dados['arquivos']        = $this->pagina_model->getArquivos($request->getPathInfo());
+		$dados['grupo']           = $this->pagina_model->getSections('sobre-o-grupo-alerta', 'o-grupo');
+		$dados['nossos_servicos'] = $this->pagina_model->getSections('nossos-servicos', 'o-grupo');
+		$dados['parceiros']       = $this->parceiro_model->getParceiros();
 
-        return view('main.paginas.grupo', $dados);
+		return view('main.paginas.grupo', $dados);
 
-    }
+	}
 
-    public function fotos($page, $album = null) {
+	public function download(Request $request, $page, $file)
+	{
 
-        $dados['page'] = $page;
+		$file = $this->pagina_model->select(
+			'id',
+			'realname',
+			'path',
+			'size',
+			'clicks'
+		)
+			->from('tb_attachment')
+			->where('id', $file)
+			->first();
 
-        $dados['albuns'] = $this->pagina_model->getAlbuns();
-        $dados['album']  = $this->pagina_model->getAlbuns($album);
+		$this->pagina_model->from('tb_attachment')->where('id', $file->id)->update(['clicks' => $file->clicks + 1]);
 
-        if (!is_null($album)) {
-            return view('main.galeria.fotos', $dados);
-        } else {
-            return view('main.galeria.index', $dados);
-        }
+		$ext      = explode('.', basename($file->path));
+		$name     = explode('.' . $ext[count($ext) - 1], $file->realname);
+		$filename = $name[0] . '.' . $ext[count($ext) - 1];
 
-    }
+		return download($file->path, $filename);
 
-    public function orcamento(Request $request) {
+	}
 
-        return view('main.paginas.orcamento');
+	public function fotos($page, $album = null)
+	{
 
-    }
+		$dados['page'] = $page;
 
-    public function contato(Request $request) {
+		$dados['albuns'] = $this->pagina_model->getAlbuns();
+		$dados['album']  = $this->pagina_model->getAlbuns($album);
 
-        return view('main.paginas.contato');
+		if (!is_null($album)) {
+			return view('main.galeria.fotos', $dados);
+		} else {
+			return view('main.galeria.index', $dados);
+		}
 
-    }
+	}
 
-    public function send_contact_form(Request $request) {
+	public function orcamento(Request $request)
+	{
 
-        $validate = [
-            'nome'     => 'required',
-            'email'    => 'required',
-            'telefone' => 'required',
-            'cidade'   => 'required',
-            'setor'    => 'required',
-            'mensagem' => 'required',
-        ];
+		return view('main.paginas.orcamento');
 
-        $request->validate($validate);
+	}
 
-        $toUser        = $this->mail_to;
-        $moreUsers     = [];
-        $evenMoreUsers = [];
+	public function contato(Request $request)
+	{
 
-        Mail::to($toUser)
-            ->cc($moreUsers)
-            ->bcc($evenMoreUsers)
-            ->send(new ContactPage($request));
+		return view('main.paginas.contato');
 
-        if (Mail::failures()) {
-            $status  = 'error';
-            $message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
-        } else {
-            $status  = 'success';
-            $message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
-        }
+	}
 
-        return json_encode(['status' => $status, 'message' => $message]);
+	public function send_contact_form(Request $request)
+	{
 
-    }
+		$validate = [
+			'nome'     => 'required',
+			'email'    => 'required',
+			'telefone' => 'required',
+			'cidade'   => 'required',
+			'setor'    => 'required',
+			'mensagem' => 'required',
+		];
 
-    public function send_orcamento_form(Request $request) {
+		$request->validate($validate);
 
-        $validate = [
-            'nome'     => 'required',
-            'email'    => 'required',
-            'telefone' => 'required',
-            'endereco' => 'required',
-            'cidade'   => 'required',
-            'estado'   => 'required',
-        ];
+		$toUser        = $this->mail_to;
+		$moreUsers     = [];
+		$evenMoreUsers = [];
 
-        if (!$request->outros_servicos && is_null($request->servicos)) {
-            $validate['servicos[]'] = ['required'];
-        }
+		Mail::to($toUser)
+			->cc($moreUsers)
+			->bcc($evenMoreUsers)
+			->send(new ContactPage($request));
 
-        if ($request->outros_servicos && (!isset($_POST['outros']) || empty(trim($_POST['outros'])))) {
-            $validate['outros'] = ['required'];
-        }
+		if (Mail::failures()) {
+			$status  = 'error';
+			$message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
+		} else {
+			$status  = 'success';
+			$message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
+		}
 
-        $request->validate($validate);
+		return json_encode(['status' => $status, 'message' => $message]);
 
-        $toUser        = $this->mail_to;
-        $moreUsers     = [];
-        $evenMoreUsers = [];
+	}
 
-        Mail::to($toUser)
-            ->cc($moreUsers)
-            ->bcc($evenMoreUsers)
-            ->send(new OrderShipped($request));
-        // ->send(new ContactPage($request));
+	public function send_orcamento_form(Request $request)
+	{
 
-        if (Mail::failures()) {
-            $status  = 'error';
-            $message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
-        } else {
-            $status  = 'success';
-            $message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
-        }
+		$validate = [
+			'nome'     => 'required',
+			'email'    => 'required',
+			'telefone' => 'required',
+			'endereco' => 'required',
+			'cidade'   => 'required',
+			'estado'   => 'required',
+		];
 
-        return json_encode(['status' => $status, 'message' => $message]);
+		if (!$request->outros_servicos && is_null($request->servicos)) {
+			$validate['servicos[]'] = ['required'];
+		}
 
-    }
+		if ($request->outros_servicos && (!isset($_POST['outros']) || empty(trim($_POST['outros'])))) {
+			$validate['outros'] = ['required'];
+		}
 
-    public function getMenus($id_menu, $id_parent = 0) {
+		$request->validate($validate);
 
-        $ul = '';
-        $li = '';
+		$toUser        = $this->mail_to;
+		$moreUsers     = [];
+		$evenMoreUsers = [];
 
-        $menus = $this->pagina_model->getSubPages($id_menu, $id_parent);
+		Mail::to($toUser)
+			->cc($moreUsers)
+			->bcc($evenMoreUsers)
+			->send(new OrderShipped($request));
+		// ->send(new ContactPage($request));
 
-        if ($menus) {
+		if (Mail::failures()) {
+			$status  = 'error';
+			$message = 'Desculpe. Infelizmente, sua mensagem não foi enviada. Tente novamente mais tarde!';
+		} else {
+			$status  = 'success';
+			$message = 'Obrigado por entrar em contato. <br> Sua mensagem foi enviada com sucesso! <br> Responderemos em breve. Aguarde!';
+		}
 
-            if ($id_parent != 0) {
-                $ul .= '<ul>';
-            } else {
-                $ul .= ' <ul class="menu">';
-            }
+		return json_encode(['status' => $status, 'message' => $message]);
 
-            foreach ($menus as $m) {
+	}
 
-                $submenu = null;
+	public function getMenus($id_menu, $id_parent = 0)
+	{
 
-                // $submenus = $this->pagina_model->select('id')
-                //     ->from('tb_pagina')
-                //     ->where('id_pagina', $m->id_parent)
-                //     ->where('id_menu', $id_menu)
-                //     ->get();
+		$ul = '';
+		$li = '';
 
-                // $link = $m->id_parent == 0 ? 'javascript:void(0);' : url($m->link . '/' . $m->slug);
+		$menus = $this->pagina_model->getSubPages($id_menu, $id_parent);
 
-                $link = url($m->link . '/' . $m->slug);
+		if ($menus) {
 
-                $ul .= '<li>';
-                $ul .= '<a href="' . $link . '" data-target="menu_pag_' . $m->id_parent . '">' . tradutor($m->titulo);
+			if ($id_parent != 0) {
+				$ul .= '<ul>';
+			} else {
+				$ul .= ' <ul class="menu">';
+			}
 
-                $submenus = $this->pagina_model->getSubPages($id_menu, $m->id_pagina);
+			foreach ($menus as $m) {
 
-                if ($submenus->count() > 0) {
-                    $ul .= '<i class="material-icons">arrow_right</i>';
-                }
+				$submenu = null;
 
-                $ul .= '</a>';
+				// $submenus = $this->pagina_model->select('id')
+				//     ->from('tb_pagina')
+				//     ->where('id_pagina', $m->id_parent)
+				//     ->where('id_menu', $id_menu)
+				//     ->get();
 
-                $ul .= $this->getMenus($id_menu, $m->id_pagina);
+				// $link = $m->id_parent == 0 ? 'javascript:void(0);' : url($m->link . '/' . $m->slug);
 
-                $ul .= '</li>';
-            }
+				$link = url($m->link . '/' . $m->slug);
 
-            $ul .= $li;
-            $ul .= '</ul>';
+				$ul .= '<li>';
+				$ul .= '<a href="' . $link . '" data-target="menu_pag_' . $m->id_parent . '">' . tradutor($m->titulo);
 
-        }
+				$submenus = $this->pagina_model->getSubPages($id_menu, $m->id_pagina);
 
-        return $ul;
+				if ($submenus->count() > 0) {
+					$ul .= '<i class="material-icons">arrow_right</i>';
+				}
 
-    }
+				$ul .= '</a>';
+
+				$ul .= $this->getMenus($id_menu, $m->id_pagina);
+
+				$ul .= '</li>';
+			}
+
+			$ul .= $li;
+			$ul .= '</ul>';
+
+		}
+
+		return $ul;
+
+	}
 
 }

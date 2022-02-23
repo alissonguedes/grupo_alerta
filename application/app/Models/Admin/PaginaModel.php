@@ -326,6 +326,61 @@ class PaginaModel extends Authenticatable
 		$arquivo   = null;
 		$id_pagina = $request->id;
 
+		if ($request->file('arquivo')) {
+
+			$file = $request->file('arquivo');
+
+			foreach ($file as $f) {
+
+				$fileName = $f->getClientOriginalName();
+				$fileExt  = $f->getClientOriginalExtension();
+				$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+
+				$imgName = explode('.', ($f->getClientOriginalName()));
+
+				$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+				$arquivo  = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+
+				$f->storeAs($path, $arquivo);
+
+				$files[] = [
+					'id_modulo' => $id_pagina,
+					'modulo'    => 'page',
+					'path'      => $path . $arquivo,
+					'realname'  => $origName,
+					'author'    => Session::get('userdata')['nome'],
+					'titulo'    => null,
+					'descricao' => null,
+					'clicks'    => 0,
+					'url'       => null,
+					'size'      => $f->getSize(),
+				];
+
+			}
+
+			$this->from('tb_attachment')->insert($files);
+
+		}
+
+		if (!is_null($arquivo)) {
+			$data['arquivo'] = $path . $arquivo;
+		}
+
+		$traducao = [];
+		$data     = [
+			'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
+			'id_menu'   => $request->menu,
+			'titulo'    => $request->titulo,
+			'slug'      => limpa_string($request->titulo),
+			'subtitulo' => $request->subtitulo,
+			'descricao' => $request->descricao,
+			'texto'     => $request->texto,
+			'idioma'    => get_config('language'),
+			'status'    => isset($request->status) ? $request->status : '0',
+		];
+
+		$this->where('id', $request->id)->update($data);
+
 		if (is_null($field)) {
 
 			// Primeiro remove todos os registros referente à mesma página para adicioná-los poteriormente
