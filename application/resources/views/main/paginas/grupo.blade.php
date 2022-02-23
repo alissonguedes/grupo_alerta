@@ -65,7 +65,7 @@
 						</div>
 					@endif
 
-					@if (isset($arquivos))
+					@if ($arquivos->count() > 0)
 						<!-- #primary -->
 						<aside id="secondary" class="widget-area designervily-sidebar col-md-3 col-lg-3" aria-label="Service Sidebar">
 
