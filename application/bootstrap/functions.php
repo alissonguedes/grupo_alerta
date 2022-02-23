@@ -1,6 +1,17 @@
 <?php
 
-use App\Models\ConfigModel;
+use App\Models\Admin\ConfigModel;
+
+if (!function_exists('data')) {
+	function data($data, $format = 'd.m.Y H:i:s', $new_format)
+	{
+
+		$mes  = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+		$data = date($format, strtotime($data));
+		$data = preg_replace('/\.(\d){2}\./', $new_format . $mes[date('m', strtotime($data)) - 1] . $new_format, $data);
+		return $data;
+	}
+}
 
 if (!function_exists('get_config')) {
 
