@@ -499,11 +499,6 @@ var Form = {
 
 			var classes = 'z-depth-2';
 
-			$('.toast-action').on('click', function(e) {
-				e.preventDefault();
-				M.Toast.dismissAll();
-			});
-
 			setTimeout(function() {
 
 				M.toast({
@@ -513,6 +508,12 @@ var Form = {
 					displayLength: _displayLength,
 					panning: false,
 				});
+
+				$('.toast-action').on('click', function(e) {
+					e.preventDefault();
+					M.Toast.dismissAll();
+				});
+
 
 			}, 200);
 
@@ -525,6 +526,7 @@ var Form = {
 		Form.clearErrors();
 
 		if (SHOW_DEFAULTS_MESSAGES && typeof error.message !== 'undefined') {
+
 			M.toast({
 				html: 'Erro [' + status + ']: ' + error.message + '<button class="btn btn-floating btn-small transparent toast-action waves-effect waves-light"><i class="material-icons">close</i></button>',
 				timeRemaining: _timeRemaining,

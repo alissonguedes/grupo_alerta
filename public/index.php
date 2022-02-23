@@ -7,9 +7,8 @@ $dir_path = explode('index.php', $_SERVER['SCRIPT_FILENAME']);
 
 array_pop($dir_path);
 
-$__DIR   = dirname($dir_path[0]);
+$__DIR = dirname($dir_path[0]);
 
-// define('BASEDIR', __DIR__ . '/../application/');
 define('BASEDIR', $__DIR . '/application/');
 define('LARAVEL_START', microtime(true));
 
@@ -26,7 +25,7 @@ define('LARAVEL_START', microtime(true));
 
 $dir = BASEDIR . 'storage/framework/maintenance.php';
 if (file_exists($dir)) {
- require $dir;
+	require $dir;
 }
 
 /*
@@ -58,7 +57,7 @@ $app = require_once BASEDIR . 'bootstrap/app.php';
 $kernel = $app->make(Kernel::class);
 
 $response = tap($kernel->handle(
- $request = Request::capture()
+	$request = Request::capture()
 ))->send();
 
 $kernel->terminate($request, $response);
