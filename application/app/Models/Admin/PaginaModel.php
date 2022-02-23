@@ -7,560 +7,573 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Session;
 
-class PaginaModel extends Authenticatable {
-
-    use HasFactory, Notifiable;
-
-    protected $table = 'tb_pagina';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    private $order = [
-        null,
-        'descricao',
-        'status',
-    ];
-
-    public function getPagina($find = null) {
-
-        $get = $this->select('*');
-
-        if (!is_null($find)) {
-            $get->where('id', $find);
-            return $get;
-        }
-
-        if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
-            $get->where(function ($get) {
-                $search = $_GET['search']['value'];
-                $get->orWhere('id', 'like', $search . '%')
-                    ->orWhere('label', 'like', $search . '%')
-                    ->orWhere('status', 'like', $search . '%');
-            });
-        }
-
-        // Order By
-        if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
-            $orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
-        } else {
-            $orderBy[$this->order[1]] = 'asc';
-        }
-
-        foreach ($orderBy as $key => $val) {
-            $get->orderBy($key, $val);
-        }
-
-        return $get;
-        return $get->paginate($_GET['length'] ?? null);
-
-    }
-
-    public function getSections($id) {
-
-        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
-        $get->from('tb_pagina_sections');
-        $get->where('id_pagina', $id);
-        $get->where('id_parent', '0');
-        $get->orderBy('ordem', 'ASC');
-        return $get->get();
-
-    }
-
-    public function getSubSections($id) {
-        $get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
-        $get->from('tb_pagina_sections');
-        $get->where('id_parent', $id);
-        // $get -> orderBy('ordem', 'ASC');
-        return $get->get();
-    }
-
-    public function getAttach($id) {
-
-        return $this->select('*')
-            ->from('tb_attachment')
-            ->where('id_modulo', $id)
-            ->where('modulo', 'page')
-            ->orderBy('realname')
-            ->get();
+class PaginaModel extends Authenticatable
+{
+
+	use HasFactory, Notifiable;
+
+	protected $table = 'tb_pagina';
+
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable = [
+		'name',
+		'email',
+		'password',
+	];
+
+	/**
+	 * The attributes that should be hidden for arrays.
+	 *
+	 * @var array
+	 */
+	protected $hidden = [
+		'password',
+		'remember_token',
+	];
+
+	/**
+	 * The attributes that should be cast to native types.
+	 *
+	 * @var array
+	 */
+	protected $casts = [
+		'email_verified_at' => 'datetime',
+	];
+
+	private $order = [
+		null,
+		'descricao',
+		'status',
+	];
+
+	public function getPagina($find = null)
+	{
+
+		$get = $this->select('*');
+
+		if (!is_null($find)) {
+			$get->where('id', $find);
+			return $get;
+		}
+
+		if (isset($_GET['search']['value']) && !empty($_GET['search']['value'])) {
+			$get->where(function ($get) {
+				$search = $_GET['search']['value'];
+				$get->orWhere('id', 'like', $search . '%')
+					->orWhere('label', 'like', $search . '%')
+					->orWhere('status', 'like', $search . '%');
+			});
+		}
+
+		// Order By
+		if (isset($_GET['order']) && $_GET['order'][0]['column'] != 0) {
+			$orderBy[$this->order[$_GET['order'][0]['column']]] = $_GET['order'][0]['dir'];
+		} else {
+			$orderBy[$this->order[1]] = 'asc';
+		}
+
+		foreach ($orderBy as $key => $val) {
+			$get->orderBy($key, $val);
+		}
+
+		return $get;
+		return $get->paginate($_GET['length'] ?? null);
+
+	}
+
+	public function getSections($id)
+	{
+
+		$get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
+		$get->from('tb_pagina_sections');
+		$get->where('id_pagina', $id);
+		$get->where('id_parent', '0');
+		$get->orderBy('ordem', 'ASC');
+		return $get->get();
+
+	}
+
+	public function getSubSections($id)
+	{
+		$get = $this->select('id', 'titulo', 'slug', 'subtitulo', 'texto', 'imagem', 'icone', 'link');
+		$get->from('tb_pagina_sections');
+		$get->where('id_parent', $id);
+		// $get -> orderBy('ordem', 'ASC');
+		return $get->get();
+	}
+
+	public function getAttach($id)
+	{
 
-    }
+		return $this->select('*')
+			->from('tb_attachment')
+			->where('id_modulo', $id)
+			->where('modulo', 'page')
+			->orderBy('realname')
+			->get();
 
-    public function getGrupo($id = null) {
-        $pag = $this->select('id', 'id_pagina', 'titulo')
-            ->from('tb_pagina');
+	}
 
-        if (!is_null($id)) {
-            $pag->where('id', '<>', $id);
-        }
+	public function getGrupo($id = null)
+	{
+		$pag = $this->select('id', 'id_pagina', 'titulo')
+			->from('tb_pagina');
 
-        return $pag->get();
-    }
+		if (!is_null($id)) {
+			$pag->where('id', '<>', $id);
+		}
 
-    public function create($request) {
+		return $pag->get();
+	}
 
-        $section = [];
+	public function create($request)
+	{
 
-        $path     = 'assets/embaixada/documentos/';
-        $origName = null;
-        $fileName = null;
-        $arquivo  = null;
+		$section = [];
 
-        $traducao = [];
-        $data     = [
-            'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
-            'id_menu'   => $request->menu,
-            'titulo'    => $request->titulo,
-            'slug'      => limpa_string($request->titulo),
-            'subtitulo' => $request->subtitulo,
-            'descricao' => $request->descricao,
-            'texto'     => $request->texto,
-            'idioma'    => get_config('language'),
-            'status'    => isset($request->status) ? $request->status : '0',
-        ];
+		$path     = 'assets/embaixada/documentos/';
+		$origName = null;
+		$fileName = null;
+		$arquivo  = null;
 
-        if ($request->file('arquivo')) {
+		$traducao = [];
+		$data     = [
+			'id_pagina' => isset($request->grupo) ? $request->grupo : 0,
+			'id_menu'   => $request->menu,
+			'titulo'    => $request->titulo,
+			'slug'      => limpa_string($request->titulo),
+			'subtitulo' => $request->subtitulo,
+			'descricao' => $request->descricao,
+			'texto'     => $request->texto,
+			'idioma'    => get_config('language'),
+			'status'    => isset($request->status) ? $request->status : '0',
+		];
 
-            $file = $request->file('arquivo');
+		if ($request->file('arquivo')) {
 
-            foreach ($file as $f) {
+			$file = $request->file('arquivo');
 
-                $fileName = $f->getClientOriginalName();
-                $fileExt  = $f->getClientOriginalExtension();
-                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+			foreach ($file as $f) {
 
-                $imgName = explode('.', ($f->getClientOriginalName()));
+				$fileName = $f->getClientOriginalName();
+				$fileExt  = $f->getClientOriginalExtension();
+				$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
 
-                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                $arquivo  = uniqid(sha1(limpa_string($fileName))) . $fileExt;
+				$imgName = explode('.', ($f->getClientOriginalName()));
 
-                $f->storeAs($path, $arquivo);
+				$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+				$arquivo  = uniqid(sha1(limpa_string($fileName))) . $fileExt;
 
-                $files[] = [
-                    'id_modulo' => $id,
-                    'modulo'    => 'page',
-                    'path'      => $path . $arquivo,
-                    'realname'  => $origName,
-                    'author'    => Session::get('userdata')['nome'],
-                    'titulo'    => null,
-                    'descricao' => null,
-                    'clicks'    => 0,
-                    'url'       => null,
-                    'size'      => $f->getSize(),
-                ];
+				$f->storeAs($path, $arquivo);
 
-            }
+				$files[] = [
+					'id_modulo' => $id,
+					'modulo'    => 'page',
+					'path'      => $path . $arquivo,
+					'realname'  => $origName,
+					'author'    => Session::get('userdata')['nome'],
+					'titulo'    => null,
+					'descricao' => null,
+					'clicks'    => 0,
+					'url'       => null,
+					'size'      => $f->getSize(),
+				];
 
-            $this->from('tb_attachment')->insert($files);
+			}
 
-        }
+			$this->from('tb_attachment')->insert($files);
 
-        if (!is_null($arquivo)) {
-            $data['arquivo'] = $path . $arquivo;
-        }
+		}
 
-        if ($id_pagina = $this->insertGetId($data)) {
+		if (!is_null($arquivo)) {
+			$data['arquivo'] = $path . $arquivo;
+		}
 
-            if ($request->section) {
+		if ($id_pagina = $this->insertGetId($data)) {
 
-                $ordem        = 0;
-                $data_section = [];
+			if ($request->section) {
 
-                foreach ($request->section as $section) {
+				$ordem        = 0;
+				$data_section = [];
 
-                    $data_subsection = [];
+				foreach ($request->section as $section) {
 
-                    $data_section['id_pagina'] = $id_pagina;
-                    $data_section['titulo']    = $section['title'];
-                    $data_section['slug']      = limpa_string($section['title']);
-                    $data_section['subtitulo'] = $section['subtitle'];
-                    $data_section['texto']     = $section['text'];
-                    $data_section['link']      = $section['link'];
-                    $data_section['imagem']    = $section['imagem'];
-                    $data_section['icone']     = $section['icone'];
-                    $data_section['ordem']     = ++$ordem;
+					$data_subsection = [];
 
-                    if (is_object($section['imagem'])) {
+					$data_section['id_pagina'] = $id_pagina;
+					$data_section['titulo']    = $section['title'];
+					$data_section['slug']      = limpa_string($section['title']);
+					$data_section['subtitulo'] = $section['subtitle'];
+					$data_section['texto']     = $section['text'];
+					$data_section['link']      = $section['link'];
+					$data_section['imagem']    = $section['imagem'];
+					$data_section['icone']     = $section['icone'];
+					$data_section['ordem']     = ++$ordem;
 
-                        $file = $section['imagem'];
+					if (is_object($section['imagem'])) {
 
-                        $fileName = $file->getClientOriginalName();
-                        $fileExt  = $file->getClientOriginalExtension();
-                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                        $imgName  = explode('.', $fileName);
-                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+						$file = $section['imagem'];
 
-                        $file->storeAs($path, $imagem);
+						$fileName = $file->getClientOriginalName();
+						$fileExt  = $file->getClientOriginalExtension();
+						$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+						$imgName  = explode('.', $fileName);
+						$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+						$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                        $data_section['imagem'] = $path . $imagem;
+						$file->storeAs($path, $imagem);
 
-                    }
+						$data_section['imagem'] = $path . $imagem;
 
-                    if (is_object($section['icone'])) {
+					}
 
-                        $file = $section['icone'];
+					if (is_object($section['icone'])) {
 
-                        $fileName = $file->getClientOriginalName();
-                        $fileExt  = $file->getClientOriginalExtension();
-                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                        $imgName  = explode('.', $fileName);
-                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+						$file = $section['icone'];
 
-                        $file->storeAs($path, $imagem);
+						$fileName = $file->getClientOriginalName();
+						$fileExt  = $file->getClientOriginalExtension();
+						$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+						$imgName  = explode('.', $fileName);
+						$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+						$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                        $data_section['icone'] = $path . $imagem;
+						$file->storeAs($path, $imagem);
 
-                    }
+						$data_section['icone'] = $path . $imagem;
 
-                    $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
+					}
 
-                    if (isset($section['subsection'])) {
+					$id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 
-                        foreach ($section['subsection'] as $ind => $subsection) {
+					if (isset($section['subsection'])) {
 
-                            $data_subsection['id_pagina'] = $id_pagina;
-                            $data_subsection['id_parent'] = $id_section;
-                            $data_subsection['titulo']    = $subsection['title'];
-                            $data_subsection['slug']      = limpa_string($subsection['title']);
-                            $data_subsection['subtitulo'] = $subsection['subtitle'];
-                            $data_subsection['texto']     = $subsection['text'];
-                            $data_subsection['link']      = $subsection['link'];
-                            $data_subsection['imagem']    = $subsection['imagem'];
-                            $data_subsection['icone']     = $subsection['icone'];
+						foreach ($section['subsection'] as $ind => $subsection) {
 
-                            if (is_object($subsection['imagem'])) {
+							$data_subsection['id_pagina'] = $id_pagina;
+							$data_subsection['id_parent'] = $id_section;
+							$data_subsection['titulo']    = $subsection['title'];
+							$data_subsection['slug']      = limpa_string($subsection['title']);
+							$data_subsection['subtitulo'] = $subsection['subtitle'];
+							$data_subsection['texto']     = $subsection['text'];
+							$data_subsection['link']      = $subsection['link'];
+							$data_subsection['imagem']    = $subsection['imagem'];
+							$data_subsection['icone']     = $subsection['icone'];
 
-                                $file = $subsection['imagem'];
+							if (is_object($subsection['imagem'])) {
 
-                                $fileName = $file->getClientOriginalName();
-                                $fileExt  = $file->getClientOriginalExtension();
-                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                                $imgName  = explode('.', $fileName);
-                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
+								$file = $subsection['imagem'];
 
-                                $file->storeAs($path, $imagem);
+								$fileName = $file->getClientOriginalName();
+								$fileExt  = $file->getClientOriginalExtension();
+								$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+								$imgName  = explode('.', $fileName);
+								$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+								$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                                $data_subsection['imagem'] = $path . $imagem;
+								$file->storeAs($path, $imagem);
 
-                            }
+								$data_subsection['imagem'] = $path . $imagem;
 
-                            if (is_object($subsection['icone'])) {
+							}
 
-                                $file = $subsection['icone'];
+							if (is_object($subsection['icone'])) {
 
-                                $fileName = $file->getClientOriginalName();
-                                $fileExt  = $file->getClientOriginalExtension();
-                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                                $imgName  = explode('.', $fileName);
-                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
+								$file = $subsection['icone'];
 
-                                $file->storeAs($path, $imagem);
+								$fileName = $file->getClientOriginalName();
+								$fileExt  = $file->getClientOriginalExtension();
+								$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+								$imgName  = explode('.', $fileName);
+								$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+								$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                                $data_subsection['icone'] = $path . $imagem;
+								$file->storeAs($path, $imagem);
 
-                            }
+								$data_subsection['icone'] = $path . $imagem;
 
-                            $this->from('tb_pagina_sections')->insertGetId($data_subsection);
+							}
 
-                        }
+							$this->from('tb_pagina_sections')->insertGetId($data_subsection);
 
-                    }
+						}
 
-                }
+					}
 
-            }
+				}
 
-            return true;
+			}
 
-        }
+			return true;
 
-        return false;
+		}
 
-    }
+		return false;
 
-    public function edit($request, $field = null) {
+	}
 
-        $files     = [];
-        $path      = 'assets/grupoalertaweb/uploads/' . date('Y') . '/' . date('m') . '/paginas/';
-        $origName  = null;
-        $fileName  = null;
-        $arquivo   = null;
-        $id_pagina = $request->id;
+	public function edit($request, $field = null)
+	{
 
-        if (is_null($field)) {
+		$files     = [];
+		$path      = 'assets/grupoalertaweb/uploads/' . date('Y') . '/' . date('m') . '/paginas/';
+		$origName  = null;
+		$fileName  = null;
+		$arquivo   = null;
+		$id_pagina = $request->id;
 
-            // Primeiro remove todos os registros referente à mesma página para adicioná-los poteriormente
-            $this->from('tb_pagina_sections')->where('id_pagina', $id_pagina)->delete();
+		if (is_null($field)) {
 
-            if ($request->section) {
+			// Primeiro remove todos os registros referente à mesma página para adicioná-los poteriormente
+			$this->from('tb_pagina_sections')->where('id_pagina', $id_pagina)->delete();
 
-                $ordem        = 0;
-                $data_section = [];
+			if ($request->section) {
 
-                foreach ($request->section as $section) {
+				$ordem        = 0;
+				$data_section = [];
 
-                    $data_subsection = [];
+				foreach ($request->section as $section) {
 
-                    $data_section['id_pagina'] = $id_pagina;
-                    $data_section['titulo']    = $section['title'];
-                    $data_section['slug']      = limpa_string($section['title']);
-                    $data_section['subtitulo'] = $section['subtitle'];
-                    $data_section['texto']     = $section['text'];
-                    $data_section['link']      = $section['link'];
-                    $data_section['imagem']    = $section['imagem'];
-                    $data_section['icone']     = $section['icone'];
-                    $data_section['ordem']     = ++$ordem;
+					$data_subsection = [];
 
-                    if (is_object($section['imagem'])) {
+					$data_section['id_pagina'] = $id_pagina;
+					$data_section['titulo']    = $section['title'];
+					$data_section['slug']      = limpa_string($section['title']);
+					$data_section['subtitulo'] = $section['subtitle'];
+					$data_section['texto']     = $section['text'];
+					$data_section['link']      = $section['link'];
+					$data_section['imagem']    = $section['imagem'];
+					$data_section['icone']     = $section['icone'];
+					$data_section['ordem']     = ++$ordem;
 
-                        $file = $section['imagem'];
+					if (is_object($section['imagem'])) {
 
-                        $fileName = $file->getClientOriginalName();
-                        $fileExt  = $file->getClientOriginalExtension();
-                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                        $imgName  = explode('.', $fileName);
-                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+						$file = $section['imagem'];
 
-                        $file->storeAs($path, $imagem);
+						$fileName = $file->getClientOriginalName();
+						$fileExt  = $file->getClientOriginalExtension();
+						$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+						$imgName  = explode('.', $fileName);
+						$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+						$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                        $data_section['imagem'] = $path . $imagem;
+						$file->storeAs($path, $imagem);
 
-                    }
+						$data_section['imagem'] = $path . $imagem;
 
-                    if (is_object($section['icone'])) {
+					}
 
-                        $file = $section['icone'];
+					if (is_object($section['icone'])) {
 
-                        $fileName = $file->getClientOriginalName();
-                        $fileExt  = $file->getClientOriginalExtension();
-                        $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                        $imgName  = explode('.', $fileName);
-                        $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                        $imagem   = uniqid(sha1($fileName)) . $fileExt;
+						$file = $section['icone'];
 
-                        $file->storeAs($path, $imagem);
+						$fileName = $file->getClientOriginalName();
+						$fileExt  = $file->getClientOriginalExtension();
+						$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+						$imgName  = explode('.', $fileName);
+						$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+						$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                        $data_section['icone'] = $path . $imagem;
+						$file->storeAs($path, $imagem);
 
-                    }
+						$data_section['icone'] = $path . $imagem;
 
-                    $id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
+					}
 
-                    if (isset($section['subsection'])) {
+					$id_section = $this->from('tb_pagina_sections')->insertGetId($data_section);
 
-                        foreach ($section['subsection'] as $ind => $subsection) {
+					if (isset($section['subsection'])) {
 
-                            $data_subsection['id_pagina'] = $id_pagina;
-                            $data_subsection['id_parent'] = $id_section;
-                            $data_subsection['titulo']    = $subsection['title'];
-                            $data_subsection['slug']      = limpa_string($subsection['title']);
-                            $data_subsection['subtitulo'] = $subsection['subtitle'];
-                            $data_subsection['texto']     = $subsection['text'];
-                            $data_subsection['link']      = $subsection['link'];
-                            $data_subsection['imagem']    = $subsection['imagem'];
-                            $data_subsection['icone']     = $subsection['icone'];
+						foreach ($section['subsection'] as $ind => $subsection) {
 
-                            if (is_object($subsection['imagem'])) {
+							$data_subsection['id_pagina'] = $id_pagina;
+							$data_subsection['id_parent'] = $id_section;
+							$data_subsection['titulo']    = $subsection['title'];
+							$data_subsection['slug']      = limpa_string($subsection['title']);
+							$data_subsection['subtitulo'] = $subsection['subtitle'];
+							$data_subsection['texto']     = $subsection['text'];
+							$data_subsection['link']      = $subsection['link'];
+							$data_subsection['imagem']    = $subsection['imagem'];
+							$data_subsection['icone']     = $subsection['icone'];
 
-                                $file = $subsection['imagem'];
+							if (is_object($subsection['imagem'])) {
 
-                                $fileName = $file->getClientOriginalName();
-                                $fileExt  = $file->getClientOriginalExtension();
-                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                                $imgName  = explode('.', $fileName);
-                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
+								$file = $subsection['imagem'];
 
-                                $file->storeAs($path, $imagem);
+								$fileName = $file->getClientOriginalName();
+								$fileExt  = $file->getClientOriginalExtension();
+								$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+								$imgName  = explode('.', $fileName);
+								$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+								$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                                $data_subsection['imagem'] = $path . $imagem;
+								$file->storeAs($path, $imagem);
 
-                            }
+								$data_subsection['imagem'] = $path . $imagem;
 
-                            if (is_object($subsection['icone'])) {
+							}
 
-                                $file = $subsection['icone'];
+							if (is_object($subsection['icone'])) {
 
-                                $fileName = $file->getClientOriginalName();
-                                $fileExt  = $file->getClientOriginalExtension();
-                                $fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
-                                $imgName  = explode('.', $fileName);
-                                $origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
-                                $imagem   = uniqid(sha1($fileName)) . $fileExt;
+								$file = $subsection['icone'];
 
-                                $file->storeAs($path, $imagem);
+								$fileName = $file->getClientOriginalName();
+								$fileExt  = $file->getClientOriginalExtension();
+								$fileExt  = $fileExt != '' ? '.' . $fileExt : '.txt';
+								$imgName  = explode('.', $fileName);
+								$origName = limpa_string($imgName[count($imgName) - 2 > 0 ? count($imgName) - 2 : 0], '_') . $fileExt;
+								$imagem   = uniqid(sha1($fileName)) . $fileExt;
 
-                                $data_subsection['icone'] = $path . $imagem;
+								$file->storeAs($path, $imagem);
 
-                            }
+								$data_subsection['icone'] = $path . $imagem;
 
-                            $this->from('tb_pagina_sections')->insertGetId($data_subsection);
+							}
 
-                        }
+							$this->from('tb_pagina_sections')->insertGetId($data_subsection);
 
-                    }
+						}
 
-                }
+					}
 
-            }
+				}
 
-            return true;
+			}
 
-        } else {
+			return true;
 
-            $data = [$field => $request->value];
+		} else {
 
-            return $this->whereIn('id', $request->id)->update($data);
+			$data = [$field => $request->value];
 
-        }
+			return $this->whereIn('id', $request->id)->update($data);
 
-    }
+		}
 
-    public function update_menu($menu) {
+	}
 
-        $arr_id  = [];
-        $id_menu = $_POST['idMenu'];
+	public function update_menu($menu)
+	{
 
-        for ($i = 0; $i < count($menu); $i++) {
+		$arr_id  = [];
+		$id_menu = $_POST['idMenu'];
 
-            $id = $menu[$i]['id'];
+		for ($i = 0; $i < count($menu); $i++) {
 
-            if (isset($menu[$i]['children'])) {
+			$id = $menu[$i]['id'];
 
-                for ($j = 0; $j < count($menu[$i]['children']); $j++) {
-                    $this->from('tb_pagina')->where('id', $menu[$i]['children'][$j]['id'])->update(['id_pagina' => $menu[$i]['id']]);
-                    $this->update_menu($menu[$i]['children']);
-                }
+			if (isset($menu[$i]['children'])) {
 
-            }
+				for ($j = 0; $j < count($menu[$i]['children']); $j++) {
+					$this->from('tb_pagina')->where('id', $menu[$i]['children'][$j]['id'])->update(['id_pagina' => $menu[$i]['id']]);
+					$this->update_menu($menu[$i]['children']);
+				}
 
-            $arr_id[] = $id;
+			}
 
-        }
+			$arr_id[] = $id;
 
-        $debug = $this->from('tb_pagina')->where('id_menu', $id_menu)->whereNotIn('id', $arr_id); //->update(['id_pagina' => 0]);
-        $this->debug($debug);
+		}
 
-    }
+		$debug = $this->from('tb_pagina')->where('id_menu', $id_menu)->whereNotIn('id', $arr_id); //->update(['id_pagina' => 0]);
+		$this->debug($debug);
 
-    public function remove($request) {
+	}
 
-        $this->remove_file($request->id);
-        return $this->whereIn('id', $request->id)->delete();
+	public function remove($request)
+	{
 
-    }
+		$this->remove_file($request->id);
+		return $this->whereIn('id', $request->id)->delete();
 
-    public function remove_file($id) {
+	}
 
-        if (is_array($id)) {
-            $column = 'id_modulo';
-        } else {
-            $column = 'id';
-        }
+	public function remove_file($id)
+	{
 
-        $files = $this->from('tb_attachment')
-            ->select('path')
-            ->where($column, $id)
-            ->get();
+		if (is_array($id)) {
+			$column = 'id_modulo';
+		} else {
+			$column = 'id';
+		}
 
-        if (isset($files)) {
+		$files = $this->from('tb_attachment')
+			->select('path')
+			->where($column, $id)
+			->get();
 
-            foreach ($files as $file) {
+		if (isset($files)) {
 
-                $file = public_path($file->path);
-                $un   = file_exists($file) ? unlink($file) : true;
+			foreach ($files as $file) {
 
-                if ($un) {
-                    return $this->from('tb_attachment')->where($column, $id)->delete();
-                }
+				$file = public_path($file->path);
+				$un   = file_exists($file) ? unlink($file) : true;
 
-            }
+				if ($un) {
+					return $this->from('tb_attachment')->where($column, $id)->delete();
+				}
 
-            return true;
+			}
 
-        }
+			return true;
 
-        return false;
+		}
 
-    }
+		return false;
 
-    public function debug($get) {
-        echo '==> ';
-        echo '<br>';
-        $query = str_replace(array('?'), array('\'%s\''), $get->toSql());
-        $query = vsprintf($query, $get->getBindings());
-        dump($query);
-        echo '<br>';
-        echo '==> ';
-    }
+	}
 
-    // public function getSubPages($page = null, $idioma = null)
-    // {
-    //     $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
-    //         ->from('tb_pagina AS P')
-    //         ->where('P.status', '1');
-    //     $page = !is_null($page) ? $page : 0;
-    //     $get->where('P.id_pagina', $page);
-    //     // if (!is_null($this->limit)) {
-    //     //     $get->limit($this->limit);
-    //     // }
-    //     // $get->orderBy('descricao', 'asc');
-    //     return $get->get();
-    // }
+	public function debug($get)
+	{
+		echo '==> ';
+		echo '<br>';
+		$query = str_replace(array('?'), array('\'%s\''), $get->toSql());
+		$query = vsprintf($query, $get->getBindings());
+		dump($query);
+		echo '<br>';
+		echo '==> ';
+	}
 
-    public function getSubPages($id_menu, $page = null, $idioma = null) {
+	// public function getSubPages($page = null, $idioma = null)
+	// {
+	//     $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao AS titulo_principal', 'P.slug')
+	//         ->from('tb_pagina AS P')
+	//         ->where('P.status', '1');
+	//     $page = !is_null($page) ? $page : 0;
+	//     $get->where('P.id_pagina', $page);
+	//     // if (!is_null($this->limit)) {
+	//     //     $get->limit($this->limit);
+	//     // }
+	//     // $get->orderBy('descricao', 'asc');
+	//     return $get->get();
+	// }
 
-        $get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao', 'P.slug')
-            ->from('tb_pagina AS P')
-            ->join('tb_acl_menu AS M', 'M.id', '=', 'P.id_menu')
-            ->where('P.status', '1');
+	public function getSubPages($id_menu, $page = null, $idioma = null)
+	{
 
-        $get->where('P.id_menu', $id_menu);
+		$get = $this->select('P.id AS id_pagina', 'P.id_menu', 'M.link', 'P.id_pagina AS id_parent', 'P.titulo', 'P.descricao', 'P.slug')
+			->from('tb_pagina AS P')
+			->join('tb_acl_menu AS M', 'M.id', '=', 'P.id_menu')
+			->where('P.status', '1');
 
-        $page = !is_null($page) ? $page : 0;
+		$get->where('P.id_menu', $id_menu);
 
-        $get->where('P.id_pagina', $page);
+		$page = !is_null($page) ? $page : 0;
 
-        // if (!is_null($this->limit)) {
-        //     $get->limit($this->limit);
-        // }
+		$get->where('P.id_pagina', $page);
 
-        $get->orderBy('descricao', 'asc');
+		// if (!is_null($this->limit)) {
+		//     $get->limit($this->limit);
+		// }
 
-        return $get->get();
+		$get->orderBy('descricao', 'asc');
 
-    }
+		return $get->get();
+
+	}
 
 }
