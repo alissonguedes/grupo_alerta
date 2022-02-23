@@ -321,8 +321,11 @@ Route::prefix('/')->group(function () {
 	Route::get('/noticias/{id}', [Noticias::class, 'show'])->name('noticias.id');
 
 	// O Grupo
-	Route::get('/o-grupo', [Paginas::class, 'grupo'])->name('grupo');
 	Route::get('/grupo', [Paginas::class, 'grupo'])->name('grupo');
+	Route::get('/grupo/file/{file}', [Paginas::class, 'download'])->name('paginas.download');
+
+	Route::get('/o-grupo', [Paginas::class, 'grupo'])->name('grupo');
+	Route::get('/o-grupo/file/{file}', [Paginas::class, 'download'])->name('paginas.download');
 
 	// Orçamento
 	Route::get('/orcamento', [Paginas::class, 'orcamento'])->name('orcamento');
@@ -337,7 +340,6 @@ Route::prefix('/')->group(function () {
 	foreach ($menus->getMenus() as $menu) {
 		Route::get('{' . $menu->link . '}', [Paginas::class, 'index']);
 		Route::get('{' . $menu->link . '}/{param?}', [Paginas::class, 'index']);
-		Route::get('{' . $menu->link . '}/file/{file}', [Paginas::class, 'download'])->name('paginas.download');
 	}
 
 });

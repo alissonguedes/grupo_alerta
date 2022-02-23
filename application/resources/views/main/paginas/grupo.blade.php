@@ -78,7 +78,7 @@
 
 										@foreach ($arquivos as $f)
 											<div class="item-download">
-												<a href="{{ route('paginas.download', [$grupo->id, $f->id]) }}" rel="noopener noreferrer">{{ $f->realname }}</a>
+												<a href="{{ route('paginas.download', $f->id) }}" rel="noopener noreferrer">{{ $f->realname }}</a>
 											</div>
 										@endforeach
 

@@ -60,7 +60,7 @@ class PaginasController extends Controller
 
 	}
 
-	public function download(Request $request, $page, $file)
+	public function download(Request $request, $file)
 	{
 
 		$file = $this->pagina_model->select(
