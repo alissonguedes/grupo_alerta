@@ -10,6 +10,7 @@ use App\Models\Main\PaginaModel;
 use App\Models\Main\ParceiroModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Response;
 
 class PaginasController extends Controller
 {
@@ -65,22 +66,28 @@ class PaginasController extends Controller
 
 		$file = $this->pagina_model->select(
 			'id',
+			'filename',
 			'realname',
 			'path',
 			'size',
 			'clicks'
 		)
 			->from('tb_attachment')
-			->where('id', $file)
+			->where('filename', $file)
 			->first();
 
-		$this->pagina_model->from('tb_attachment')->where('id', $file->id)->update(['clicks' => $file->clicks + 1]);
+		$this->pagina_model->from('tb_attachment')->where('filename', $file->filename)->update(['clicks' => $file->clicks + 1]);
 
 		$ext      = explode('.', basename($file->path));
 		$name     = explode('.' . $ext[count($ext) - 1], $file->realname);
 		$filename = $name[0] . '.' . $ext[count($ext) - 1];
 
-		return download($file->path, $filename);
+		// return download($file->path, $filename);
+		return Response::make(file_get_contents($file->path), 200, [
+			'Content-Type'        => 'application/pdf',
+			'Content-Disposition' => 'inline; name="fieldName"; filename="' . $filename . '"',
+			// 'Content-Disposition' => 'inline; filename="' . $filename . '"',
+		]);
 
 	}
 

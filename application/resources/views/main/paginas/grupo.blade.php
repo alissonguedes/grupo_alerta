@@ -69,25 +69,31 @@
 						<!-- #primary -->
 						<aside id="secondary" class="widget-area designervily-sidebar col-md-3 col-lg-3" aria-label="Service Sidebar">
 
-							<aside id="text-2" class="widget-even widget-2 widget widget_text digicop_widget  digicop_widget_count_2">
+							<!--<aside id="text-2" class="widget-even widget-2 widget widget_text digicop_widget  digicop_widget_count_2">-->
 
-								<h2 class="widget-title">Arquivos</h2>
 
-								<div class="textwidget">
-									<div class="download">
+							<!--	<div class="textwidget">-->
+							<!--		<div class="download">-->
 
-										@foreach ($arquivos as $f)
-											<div class="item-download">
-												<a href="{{ route('paginas.download', $f->id) }}" rel="noopener noreferrer">{{ $f->realname }}</a>
-											</div>
-										@endforeach
+							<!--			@foreach ($arquivos as $f)-->
+							<!--				<div class="item-download">-->
+							<!--					<a href="{{ route('paginas.download', $f->id) }}" rel="noopener noreferrer">{{ $f->realname }}</a>-->
+							<!--				</div>-->
+							<!--			@endforeach-->
 
-									</div>
-								</div>
-							</aside>
+							<!--		</div>-->
+							<!--	</div>-->
+							<!--</aside>-->
+
 							<aside id="media_image-2" class="widget-odd widget-last widget-3 widget widget_media_image digicop_widget  digicop_widget_count_3">
-								<img width="308" height="481" src="{{ asset('assets/grupoalertaweb/img/banner-a2.jpg') }}" class="image wp-image-13784  attachment-full size-full" alt="" loading="lazy" style="max-width: 100%; height: auto;" />
+								<h2 class="widget-title">Portifólio</h2>
+								@foreach( $arquivos as $f)
+								<a href="{{ route('paginas.download', $f->filename) }}" rel="noopener noreferrer" target="_blank">
+    								<img width="308" height="481" src="{{ asset('assets/grupoalertaweb/img/portfolio.jpg') }}" class="image wp-image-13784  attachment-full size-full" alt="" loading="lazy" style="max-width: 100%; height: auto;" />
+								</a>
+								@endforeach
 							</aside>
+
 						</aside>
 						<!-- #secondary -->
 					@endif

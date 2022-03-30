@@ -213,7 +213,7 @@ namespace App\Models\Main {
 		public function getArquivos($page)
 		{
 
-			$get = $this->select('id', 'path', 'realname', 'size', 'created_at', 'status')
+			$get = $this->select('id', 'path', 'filename', 'realname', 'size', 'created_at', 'status')
 				->from('tb_attachment')
 				->where('id_modulo', DB::raw('(SELECT id FROM tb_pagina WHERE slug = "' . str_replace('/', '', $page) . '")'))
 				->where('modulo', 'page')
